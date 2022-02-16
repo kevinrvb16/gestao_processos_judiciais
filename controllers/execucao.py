@@ -12,6 +12,10 @@ class ControladorSistema:
         self.__interface_sistema = InterfaceSistema(self)
         self.__controlador_processo = ProcessoController(self)
 
+    @property
+    def interface(self):
+        return self.__interface_sistema
+
     def juiz_controller(self):
         return self.__controlador_juiz
 
@@ -43,31 +47,33 @@ class ControladorSistema:
         self.__controlador_processo.despachar()
 
     def login(self):
-        while True:
-            try:
-                botao, valores = self.__interface_sistema.tela_login()
-                if botao == 'Confirmar':
-                    opcao = valores[0]
-                    usuario = valores[1]
-                    senha = valores[2]
-                    if opcao == 'Parte':
-                        cadastro = self.parteController.parte_dao.get(usuario)
-                    # elif opcao == 'Advogado':
-                    #     cadastro = self.advogadoController.advogado_dao.get(usuario)
-                    elif opcao == 'Juiz':
-                        cadastro = self.controlador_juiz.juiz_dao.get(usuario)
-                    if cadastro:
-                        if senha == cadastro.senha:
-                            return self.__interface_sistema.aviso('Deu certo')
-                        else:
-                            raise Exception
-                    else:
-                        raise TypeError
+        botao, valores = self.__interface_sistema.tela_login()
+        if botao == 'Confirmar':
+            print(valores)
+            usuario = valores['Login'].strip()
+            senha = valores['Senha']
+            print(usuario)
+            print(senha)
+            if valores['Parte']:
+                cadastro = self.__controlador_parte.parte_dao.get(usuario)
+            elif valores['Advogado']:
+                cadastro = self.__controlador_advogado.advogado_dao.get(usuario)
+            elif valores['Juiz']:
+                cadastro = self.__controlador_juiz.juiz_dao.get(usuario)
+            if cadastro:
+                print(cadastro.senha)
+                print(senha)
+                print(cadastro.senha == senha)
+                if senha == cadastro.senha:
+                    if valores['Parte']:
+                        pass
+                    elif valores['Advogado']:
+                        return self.init_module_efetuar_ato_processual()
+                    elif valores['Juiz']:
+                        return self.init_module_despachar(cadastro)
                 else:
-                    break
-            except TypeError:
-                self.__interface_sistema.aviso('Escolha um tipo de cadastro e informe seu número de usuário e senha corretamente.')
-            except Exception:
-                self.__interface_sistema.aviso('Senha incorreta.')
+                    self.__interface_sistema.aviso('Senha incorreta')
+            else:
+                self.__interface_sistema.aviso('Usuário inexistente')
 
-        
+                
