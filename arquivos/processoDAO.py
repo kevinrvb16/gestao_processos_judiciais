@@ -18,18 +18,25 @@ class ProcessoDAO:
     def __load(self):
         self.object_cache = pickle.load(open(self.datasource, 'rb'))
 
-    def add(cod_OAB, cpf_autor, eh_sigiloso, cpf_reu, anexo, id_juiz, id_processo):
-        if (isinstance(anexo, str) and
-                isinstance(cpf_autor, str) and
-                isinstance(cod_OAB, int) and
-                isinstance(eh_sigiloso, bool) and
+    def add(self, cod_OAB, cpf_autor, cpf_reu, anexo, id_juiz, id_processo, eh_sigiloso):
+        print(type(cod_OAB))
+        print(type(cpf_autor))
+        print(type(cpf_reu))
+        print(type(anexo))
+        print(type(id_juiz))
+        print(type(id_processo))
+        if (    isinstance(cpf_autor, str) and
+                isinstance(anexo, str) and
+                isinstance(cod_OAB, str) and
                 isinstance(id_processo, int) and
-                isinstance(id_juiz, int) and
+                isinstance(id_juiz, str) and
                 isinstance(cpf_reu, str)):
+            print('oiiiii')
             data = date.today()
-            novo_processo = Processo(cod_OAB, cpf_autor, eh_sigiloso, id_processo, cpf_reu, id_juiz)
-            novo_processo.data.setter(data)
-            novo_processo.anexos.setter(anexo)
+            novo_processo = Processo(cod_OAB, cpf_autor, id_processo, cpf_reu, id_juiz)
+            novo_processo.set_data(data)
+            novo_processo.set_anexos(anexo)
+            novo_processo.set_eh_sigiloso(eh_sigiloso)
             self.object_cache[novo_processo.id_processo] = novo_processo
             self.__dump()
             return True

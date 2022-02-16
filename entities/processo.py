@@ -1,24 +1,22 @@
 class Processo:
 
-    def __init__(self,codOAB_advogado_autor: int, autor: str, eh_sigiloso: bool,  id_processo: int, reu: str,  juiz: int, anexos: str):
+    def __init__(self, codOAB_advogado_autor: int, autor: str,  id_processo: int, reu: str,  juiz: int):
         
         self.__anexos = []
         self.__autor = autor
         self.__codOAB_advogado_autor = codOAB_advogado_autor
         self.__codOAB_advogado_reu = -1
         self.__data = []
-        self.__eh_sigiloso = eh_sigiloso
+        self.__eh_sigiloso = False
         self.__eh_urgente = False
         self.__id_processo = id_processo
         self.__juiz = juiz
         self.__reu = reu
 
-    @property
-    def anexos(self):
+    def get_anexos(self):
         return self.__anexos
 
-    @anexos.setter
-    def anexos(self, anexos):
+    def set_anexos(self, anexos):
         self.__anexos.append(anexos)
 
     @property
@@ -45,20 +43,17 @@ class Processo:
     def codOAB_advogado_reu(self, codOAB_advogado_reu):
         self.__codOAB_advogado_reu = codOAB_advogado_reu
 
-    @property
-    def data(self):
+    def get_data(self):
         return self.__data
 
-    @data.setter
-    def data(self, data):
+    def set_data(self, data):
         self.__data.append(data)
+        print(self.__data)
 
-    @property
-    def eh_sigiloso(self):
+    def get_eh_sigiloso(self):
         return self.__eh_sigiloso
 
-    @eh_sigiloso.setter
-    def eh_sigiloso(self, eh_sigiloso):
+    def set_eh_sigiloso(self, eh_sigiloso):
         self.__eh_sigiloso = eh_sigiloso
 
     @property

@@ -55,7 +55,7 @@ class JuizController:
             lista_cpf.append(juiz.cpf)
         return random.choice(lista_cpf)
 
-    def verifica_matricula_jah_existente(self, cpf):
+    def verifica_cpf_jah_existente(self, cpf):
         verificacao = self.__juiz_dao.get(cpf)
         if verificacao is None:
             return False

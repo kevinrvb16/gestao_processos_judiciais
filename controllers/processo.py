@@ -4,6 +4,7 @@ from arquivos.processoDAO import ProcessoDAO
 from controllers.validadorCPF import ValidadorCPF
 from datetime import date
 import numpy as np
+import pickle
 
 class ProcessoController:
 
@@ -66,9 +67,20 @@ class ProcessoController:
                 
                 if arquivo_anexado:
                     id_processo = self.atribui_id()
-                    self.solicita_sigilo(eh_sigiloso, id_processo)
                     id_juiz = juiz_controller.sortear_juiz()
-                    sucesso_add = self.__processo_dao.add(cod_OAB, cpf_autor, eh_sigiloso, cpf_reu, anexo, id_juiz, id_processo)
+                    print('---')
+                    
+                    print(id_processo)
+                    print(cod_OAB)
+                    print(cpf_autor)
+                    print(cpf_reu)
+                    print(anexo)
+                    print(id_juiz)
+
+                    sucesso_add = self.__processo_dao.add(cod_OAB, cpf_autor, cpf_reu, anexo, id_juiz, id_processo, eh_sigiloso)
+                    print(sucesso_add)
+                    if eh_sigiloso:
+                        self.solicita_sigilo(id_processo)
                     if sucesso_add:
                         self.__interface_processo.aviso('Processo cadastrado com sucesso')
                 else:
@@ -132,14 +144,12 @@ class ProcessoController:
             var.append(id_processo)
             np.savetxt('listaDeUrgencia.txt', var, fmt='%d')
 
-    def solicita_sigilo(self, eh_sigiloso, id_processo):
-        print(eh_sigiloso)
-        print(id_processo)
-        self.__processo_dao.set_sigilo(eh_sigiloso, id_processo)
-        if self.__np_array_de_sigilo == []:
-            np.savetxt('listaDeSigilo.txt', self.__np_array_de_sigilo, fmt='%d')
-        else:
-            var = np.loadtxt('listaDeSigilo.txt', dtype=int)
-            var.append(id_processo)
-            np.savetxt('listaDeSigilo.txt', var, fmt='%d')
+    def solicita_sigilo(self, id_processo):
+        try:
+            processos_sigilosos= pickle.load(open(self.datasource, 'rb')
+        except FileNotFoundError:
+            processos_sigilosos= []
+            processos_sigilosos.append(id_processo)
+            pickle.dump(open(processos_sigilosos, 'solicita_sigilo.txt', 'wb'))
+            
 
