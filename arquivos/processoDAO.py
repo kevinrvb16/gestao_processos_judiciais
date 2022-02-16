@@ -19,19 +19,12 @@ class ProcessoDAO:
         self.object_cache = pickle.load(open(self.datasource, 'rb'))
 
     def add(self, cod_OAB, cpf_autor, cpf_reu, anexo, id_juiz, id_processo, eh_sigiloso):
-        print(type(cod_OAB))
-        print(type(cpf_autor))
-        print(type(cpf_reu))
-        print(type(anexo))
-        print(type(id_juiz))
-        print(type(id_processo))
         if (    isinstance(cpf_autor, str) and
                 isinstance(anexo, str) and
                 isinstance(cod_OAB, str) and
                 isinstance(id_processo, int) and
                 isinstance(id_juiz, str) and
                 isinstance(cpf_reu, str)):
-            print('oiiiii')
             data = date.today()
             novo_processo = Processo(cod_OAB, cpf_autor, id_processo, cpf_reu, id_juiz)
             novo_processo.set_data(data)

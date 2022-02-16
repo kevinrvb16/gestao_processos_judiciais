@@ -68,17 +68,7 @@ class ProcessoController:
                 if arquivo_anexado:
                     id_processo = self.atribui_id()
                     id_juiz = juiz_controller.sortear_juiz()
-                    print('---')
-                    
-                    print(id_processo)
-                    print(cod_OAB)
-                    print(cpf_autor)
-                    print(cpf_reu)
-                    print(anexo)
-                    print(id_juiz)
-
                     sucesso_add = self.__processo_dao.add(cod_OAB, cpf_autor, cpf_reu, anexo, id_juiz, id_processo, eh_sigiloso)
-                    print(sucesso_add)
                     if eh_sigiloso:
                         self.solicita_sigilo(id_processo)
                     if sucesso_add:
@@ -104,9 +94,6 @@ class ProcessoController:
             valores = self.__interface_ato_processual.tela_realizar_ato()
             eh_urgente = valores[0]
             nome_anexo= valores['-IN-']
-            print('----')
-            print(valores)
-            print(valores[0])
             arquivo_anexado = self.verifica_anexo(nome_anexo)
             if arquivo_anexado:
                 data = date.today()
@@ -173,5 +160,12 @@ class ProcessoController:
 
         print('\nConteudo no listaSigilo.txt:\n', conteudo)
         arquivo.close()
-            
+
+
+    def listar_Processos(self):
+        dic_nome_num_Processos = {}
+        lista_processos = self.__processo_dao.get_all()
+        for processo in lista_processos:
+            dic_nome_num_Processos[processo.get_eh_urgente] = processo.id_processo
+        print(dic_nome_num_Processos)
 
