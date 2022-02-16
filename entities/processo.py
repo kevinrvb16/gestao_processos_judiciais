@@ -18,6 +18,7 @@ class Processo:
 
     def set_anexos(self, anexos):
         self.__anexos.append(anexos)
+        print(self.__anexos)
 
     @property
     def autor(self):
@@ -56,12 +57,10 @@ class Processo:
     def set_eh_sigiloso(self, eh_sigiloso):
         self.__eh_sigiloso = eh_sigiloso
 
-    @property
-    def eh_urgente(self):
+    def get_eh_urgente(self):
         return self.__eh_urgente
 
-    @eh_urgente.setter
-    def eh_urgente(self, eh_urgente):
+    def set_eh_urgente(self, eh_urgente):
         self.__eh_urgente = eh_urgente
 
     @property

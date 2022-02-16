@@ -22,9 +22,9 @@ class InterfaceProcesso:
                 [psg.Input(key='-IN-'), psg.FileBrowse()],
                 [psg.Button('Cadastrar'), psg.Button('Voltar')]
             ]
-            tela_cadastro = psg.Window('Cadastrar Processo').Layout(layout_cadastro)
-            event, values = tela_cadastro.Read()
-            tela_cadastro.Close()
+            self.__window = psg.Window('Cadastrar Processo').Layout(layout_cadastro)
+            event, values = self.__window.Read()
+            self.__window.Close()
             if event == 'Voltar' or event == psg.WIN_CLOSED:
                 break
             else:
@@ -39,3 +39,6 @@ class InterfaceProcesso:
         tela_aviso = psg.Window('Aviso').Layout(layout_aviso)
         tela_aviso.Read()
         tela_aviso.Close()
+        
+    def close_tela_principal(self):
+        self.__window.Close()

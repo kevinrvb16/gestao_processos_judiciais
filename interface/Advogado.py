@@ -17,9 +17,9 @@ class InterfaceAdvogado:
                 [psg.Text('Senha:', size=(20, 1)), psg.InputText('', key='password', password_char='*')],
                 [psg.Button('Enviar Dados'), psg.Button('Voltar')]
             ]
-            tela_cadastro = psg.Window('Cadastrar Advogado').Layout(layout_cadastro)
-            event, values = tela_cadastro.Read()
-            tela_cadastro.Close()
+            self.__window = psg.Window('Cadastrar Advogado').Layout(layout_cadastro)
+            event, values = self.__window.Read()
+            self.__window.Close()
             if event == 'Voltar' or event == psg.WIN_CLOSED:
                 break
             else:
@@ -43,3 +43,7 @@ class InterfaceAdvogado:
         tela_aviso = psg.Window('Aviso').Layout(layout_aviso)
         tela_aviso.Read()
         tela_aviso.Close()
+        
+        
+    def close_tela_principal(self):
+        self.__window.Close()

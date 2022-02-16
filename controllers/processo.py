@@ -99,18 +99,24 @@ class ProcessoController:
         
         
         
-    def realizar_ato_processual(self): ##colocar id processo no parametro
+    def realizar_ato_processual(self, id_processo):
         while True:
             valores = self.__interface_ato_processual.tela_realizar_ato()
             eh_urgente = valores[0]
-            nome_anexo= valores[1]
+            nome_anexo= valores['-IN-']
+            print('----')
+            print(valores)
+            print(valores[0])
             arquivo_anexado = self.verifica_anexo(nome_anexo)
             if arquivo_anexado:
                 data = date.today()
                 self.salvar_data(data, id_processo)
                 self.solicita_urgencia(eh_urgente, id_processo)
                 self.salvar_anexo(nome_anexo, id_processo)
-            
+                self.__interface_processo.aviso('   Processo atualizado com Sucesso ')
+            else:
+                self.__interface_processo.aviso('   Anexe um arquivo    ')
+                continue
             break
     
     def despachar(self, id_processo):
@@ -136,21 +142,36 @@ class ProcessoController:
         self.__processo_dao.add_anexo(data, id_processo)
 
     def solicita_urgencia(self, eh_urgente, id_processo):
-        self.__processo_dao.set_urgencia(eh_urgente, id_processo)
-        if self.__np_array_de_urgencia == []:
-            np.savetxt('listaDeUrgencia.txt', self.__np_array_de_urgencia, fmt='%d')
-        else:
-            var = np.loadtxt('listaDeUrgencia.txt', dtype=int)
-            var.append(id_processo)
-            np.savetxt('listaDeUrgencia.txt', var, fmt='%d')
+        
+        lista = np.array(id_processo)
+        print('Lista Urgencia:')
+        print(lista)
+        
+        arquivo = open('listaUrgencia.txt', 'r')
+        conteudo = arquivo.read()
+        
+        arquivo = open('listaUrgencia.txt', 'w+')
+        conteudo += str(lista) + '\n'
+        arquivo.write(conteudo)
+        arquivo.close()
+        
+        print('\nConteudo no listaUrgencia.txt:\n', conteudo)
+        arquivo.close()
 
     def solicita_sigilo(self, id_processo):
-        ##try:
-         ##   processos_sigilosos= pickle.load(open(self.datasource, 'rb')
-        ##except FileNotFoundError:
-         ##   processos_sigilosos= []
-       ##     processos_sigilosos.append(id_processo)
-       ##     pickle.dump(open(processos_sigilosos, 'solicita_sigilo.txt', 'wb'))
-       return True
+        lista = np.array(id_processo)
+        print('Lista Sigilo:')
+        print(lista)
+
+        arquivo = open('listaSigilo.txt', 'r')
+        conteudo = arquivo.read()
+        
+        arquivo = open('listaSigilo.txt', 'w+')
+        conteudo += str(lista) + ', '
+        arquivo.write(conteudo)
+        arquivo.close()
+
+        print('\nConteudo no listaSigilo.txt:\n', conteudo)
+        arquivo.close()
             
 

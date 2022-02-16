@@ -37,7 +37,7 @@ class ControladorSistema:
         self.__controlador_processo.cadastrar_processo()
         
     def init_module_efetuar_ato_processual(self):
-        self.__controlador_processo.realizar_ato_processual()
+        self.__controlador_processo.realizar_ato_processual(1)
         
     def init_module_despachar(self):
         self.__controlador_processo.despachar()
