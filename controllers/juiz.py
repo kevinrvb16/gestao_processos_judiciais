@@ -11,6 +11,10 @@ class JuizController:
         self.__interface_juiz = InterfaceJuiz(self)
         self.__juiz_dao = JuizDAO()
         self.__controlador_execucao = controlador_execucao
+    
+    @property
+    def juiz_dao(self):
+        return self.__juiz_dao
 
     def cadastrar_juiz(self):
         while True:
@@ -31,18 +35,20 @@ class JuizController:
                     self.__interface_juiz.aviso('\nCampo(s) obrigatórios não preenchidos')
                     continue
                 senha = valores['password']
-                try:
-                    senha_utf = senha.encode('utf-8')
-                    sha1hash = hashlib.sha1()
-                    sha1hash.update(senha_utf)
-                    senha_hash = sha1hash.hexdigest()
-                except Exception:
-                    self.__tela_login.aviso('Erro ao gerar senha')
-                    break
+                # try:
+                #     senha_utf = senha.encode('utf-8')
+                #     sha1hash = hashlib.sha1()
+                #     sha1hash.update(senha_utf)
+                #     senha_hash = sha1hash.hexdigest()
+                # except Exception:
+                #     self.__tela_login.aviso('Erro ao gerar senha')
+                #     break
                 sucesso_add = self.__juiz_dao.add(valores['nome'],
                                                            cpf,
-                                                           senha_hash,
-                                                           False)
+                                                           valores['matricula'],
+                                                           senha)
+                print(valores['nome'], cpf, valores['matricula'], senha)
+
                 if not sucesso_add:
                     self.__interface_juiz.aviso('Erro no cadastro')
                 break

@@ -7,6 +7,7 @@ class InterfaceSistema:
         self.__controlador = controlador
         self.__window = None
 
+
     def tela_login(self):
         while True:
             layout_login = [
@@ -15,19 +16,20 @@ class InterfaceSistema:
                     [psg.Radio('Parte', 'r1', key = 'Parte'),
                      psg.Radio('Advogado', 'r1', key = 'Advogado'),
                      psg.Radio('Juiz', 'r1', key = 'Juiz')]])],
-                [psg.Text('Número de usuário', size=(20, 1)), psg.InputText('', key = 'Usuario')],
+                [psg.Text('Número de usuário', size=(20, 1)), psg.InputText('', key = 'Login')],
                 [psg.Text('Senha', size=(20, 1)), psg.InputText('', key = 'Senha')],
 
                 [psg.Button('Confirmar'), psg.Button('Sair')]
             ]
-            tela_login = psg.Window('Login').Layout(layout_login)
-            botao, valores = tela_login.Read()
-            tela_login.Close()
+            self.__window = psg.Window('Login').Layout(layout_login)
+            botao, valores = self.__window.Read()
+            self.__window.Close()
+            break
+        return botao, valores
 
-            if botao == 'Sair' or botao == psg.WIN_CLOSED:
-                break
-            else:
-                return botao, valores
+
+
+                
     
     def tela_inicial(self):
         psg.theme('Reddit')
@@ -62,10 +64,12 @@ class InterfaceSistema:
             else:
                 if values[0]:
                     tela_inicio_sistema.Close()
-                    self.tela_cadastro()
+                    return self.tela_cadastro()
                 else:
                     tela_inicio_sistema.Close()
-                    self.tela_login()
+                    return self.__controlador.login()
+
+                    
             
     def tela_cadastro(self):
          while True:
