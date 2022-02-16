@@ -17,11 +17,11 @@ class JuizDAO:
     def __load(self):
         self.object_cache = pickle.load(open(self.datasource, 'rb'))
 
-    def add(self, nome, cpf, matricula, senha, logado):
+    def add(self, nome, cpf, matricula, senha):
         if (isinstance(nome, str) and
                 isinstance(cpf, str) and
                 isinstance(senha, str)):
-            novo_juiz = Juiz(nome, cpf, matricula, senha, logado)
+            novo_juiz = Juiz(nome, cpf, matricula, senha)
             self.object_cache[novo_juiz.cpf] = novo_juiz
             self.__dump()
             return True
