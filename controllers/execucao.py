@@ -73,7 +73,10 @@ class ControladorSistema:
                         return self.init_module_despachar(cadastro)
                 else:
                     self.__interface_sistema.aviso('Senha incorreta')
+                    return self.login()
             else:
                 self.__interface_sistema.aviso('Usuário inexistente')
+                return self.login()
+        return self.interface.tela_inicial()
 
                 
