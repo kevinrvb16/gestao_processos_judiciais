@@ -62,10 +62,12 @@ class InterfaceSistema:
             else:
                 if values[0]:
                     tela_inicio_sistema.Close()
-                    self.tela_cadastro()
+                    return self.tela_cadastro()
                 else:
                     tela_inicio_sistema.Close()
-                    self.tela_login()
+                    return self.__controlador.login()
+                    
+                    
             
     def tela_cadastro(self):
          while True:
