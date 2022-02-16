@@ -46,9 +46,14 @@ class InterfaceAtoProcessual:
                 [psg.Text('', size=(30, 1))],
                 [psg.Text('Anexe aqui seu arquivo:', size=(30, 1))],
                 [psg.Input(psg.user_settings_get_entry('-filename-', ''), key='-IN-'), psg.FileBrowse()],
+                [psg.Frame('Selecione as partes cujos advogados devem ser intimados', layout = [
+                    [psg.Checkbox('Autora', key = 'Autora',),
+                     psg.Checkbox('Ré', key = 'Ré'),
+                     psg.Checkbox('Ambas', key = 'Ambas')]])],
                 [psg.Button('Enviar'), psg.Button('Voltar')]
             ]
             despachar_processo = psg.Window('Despachar').Layout(layout_despachar_processo)
+            self.__window = despachar_processo
             event, values = despachar_processo.Read()
             despachar_processo.Close()
             if event == 'Voltar' or event == psg.WIN_CLOSED:
