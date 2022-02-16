@@ -145,11 +145,12 @@ class ProcessoController:
             np.savetxt('listaDeUrgencia.txt', var, fmt='%d')
 
     def solicita_sigilo(self, id_processo):
-        try:
-            processos_sigilosos= pickle.load(open(self.datasource, 'rb')
-        except FileNotFoundError:
-            processos_sigilosos= []
-            processos_sigilosos.append(id_processo)
-            pickle.dump(open(processos_sigilosos, 'solicita_sigilo.txt', 'wb'))
+        ##try:
+         ##   processos_sigilosos= pickle.load(open(self.datasource, 'rb')
+        ##except FileNotFoundError:
+         ##   processos_sigilosos= []
+       ##     processos_sigilosos.append(id_processo)
+       ##     pickle.dump(open(processos_sigilosos, 'solicita_sigilo.txt', 'wb'))
+       return True
             
 
