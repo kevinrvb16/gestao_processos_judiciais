@@ -98,7 +98,8 @@ class ProcessoController:
             if arquivo_anexado:
                 data = date.today()
                 self.salvar_data(data, id_processo)
-                self.solicita_urgencia(eh_urgente, id_processo)
+                if(eh_urgente):
+                   self.solicita_urgencia(eh_urgente, id_processo)
                 self.salvar_anexo(nome_anexo, id_processo)
                 self.__interface_processo.aviso('   Processo atualizado com Sucesso ')
             else:
@@ -131,8 +132,6 @@ class ProcessoController:
     def solicita_urgencia(self, eh_urgente, id_processo):
         
         lista = np.array(id_processo)
-        print('Lista Urgencia:')
-        print(lista)
         
         arquivo = open('listaUrgencia.txt', 'r')
         conteudo = arquivo.read()
@@ -142,13 +141,8 @@ class ProcessoController:
         arquivo.write(conteudo)
         arquivo.close()
         
-        print('\nConteudo no listaUrgencia.txt:\n', conteudo)
-        arquivo.close()
-
     def solicita_sigilo(self, id_processo):
         lista = np.array(id_processo)
-        print('Lista Sigilo:')
-        print(lista)
 
         arquivo = open('listaSigilo.txt', 'r')
         conteudo = arquivo.read()

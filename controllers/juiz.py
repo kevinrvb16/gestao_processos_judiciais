@@ -85,3 +85,30 @@ class JuizController:
     def get_nome_juiz_by_cpf(self, cpf: str):
         juiz = self.__juiz_dao.get(cpf)
         return juiz.nome
+    
+    def editar_juiz(self, juiz, opcao, novo_dado):
+        if opcao == 0:
+            juiz.nome = novo_dado
+        elif opcao == 1:
+            juiz.matricula = novo_dado
+        elif opcao == 2:
+            juiz.cpf = novo_dado
+        elif opcao == 3:
+            juiz.senha = novo_dado
+        self.__juiz_dao.remove(juiz.matricula)
+        sucesso_edicao = self.__juiz_dao.add(juiz.nome,
+                                                juiz.cpf,
+                                                juiz.matricula,
+                                                juiz.senha)
+        if sucesso_edicao:
+            self.__tela_juiz.aviso('   Edicao sobre juiz efetuada.   ')
+        else:
+            self.__tela_juiz.aviso('Erro em edicao de juiz. Repita a operação.')
+            
+    def remover_juiz(self, juiz):
+        self.__juiz_dao.remove(juiz.matricula)
+        self.__tela_juiz.aviso('juiz removido com sucesso.')
+        
+    def mostrar_detalhes_juiz(self, matricula_juiz):
+        juiz = self.__juiz_dao.get(matricula_juiz)
+        self.__tela_juiz.tela_mostrar_detalhes_juiz(juiz)
