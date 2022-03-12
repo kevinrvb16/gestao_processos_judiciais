@@ -109,6 +109,6 @@ class JuizController:
         self.__juiz_dao.remove(juiz.matricula)
         self.__tela_juiz.aviso('juiz removido com sucesso.')
         
-    def mostrar_detalhes_juiz(self, matricula_juiz):
-        juiz = self.__juiz_dao.get(matricula_juiz)
+    def mostrar_detalhes_juiz(self, cpf_juiz):
+        juiz = self.__juiz_dao.get(cpf_juiz)
         self.__tela_juiz.tela_mostrar_detalhes_juiz(juiz)

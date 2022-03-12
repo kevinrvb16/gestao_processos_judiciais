@@ -49,11 +49,8 @@ class ControladorSistema:
     def login(self):
         botao, valores = self.__interface_sistema.tela_login()
         if botao == 'Confirmar':
-            print(valores)
             usuario = valores['Login'].strip()
             senha = valores['Senha']
-            print(usuario)
-            print(senha)
             if valores['Parte']:
                 cadastro = self.__controlador_parte.parte_dao.get(usuario)
             elif valores['Advogado']:
@@ -62,15 +59,13 @@ class ControladorSistema:
                 cadastro = self.__controlador_juiz.juiz_dao.get(usuario)
             if cadastro:
                 print(cadastro.senha)
-                print(senha)
-                print(cadastro.senha == senha)
                 if senha == cadastro.senha:
                     if valores['Parte']:
                         pass
                     elif valores['Advogado']:
                         return self.init_module_efetuar_ato_processual()
                     elif valores['Juiz']:
-                        return self.init_module_despachar(cadastro)
+                        return self.__controlador_juiz.mostrar_detalhes_juiz(valores[0])
                 else:
                     self.__interface_sistema.aviso('Senha incorreta')
                     return self.login()
