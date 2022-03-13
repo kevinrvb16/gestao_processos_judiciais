@@ -16,7 +16,6 @@ class ControladorSistema:
     def interface(self):
         return self.__interface_sistema
 
-
     def juiz_controller(self):
         return self.__controlador_juiz
 

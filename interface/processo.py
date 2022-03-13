@@ -26,7 +26,8 @@ class InterfaceProcesso:
             event, values = self.__window.Read()
             self.__window.Close()
             if event == 'Voltar' or event == psg.WIN_CLOSED:
-                break
+                self.__window.Close()
+                return -1
             else:
                 settings['-filename-'] = values['-IN-']
                 return values

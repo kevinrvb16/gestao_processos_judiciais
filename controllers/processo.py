@@ -16,7 +16,10 @@ class ProcessoController:
         self.__np_array_de_urgencia = np.array([])
         self.__np_array_de_sigilo = np.array([])
         self.__np_array_de_processos = np.array([])
-        
+
+    @property
+    def controlador_execucao(self):
+        return self.__controlador_execucao
 
     def cadastrar_processo(self):
         while True:

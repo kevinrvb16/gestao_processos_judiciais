@@ -7,13 +7,13 @@ class InterfaceParte:
         self.__controlador = controlador
         self.__window = None
 
-    def tela_cadastrar_parte(self, cpf):
+    def tela_cadastrar_parte(self):
         while True:
             layout_cadastro = [
                 [psg.Text('Preencha os dados abaixo:')],
                 [psg.Text('Nome:', size=(20, 1)), psg.InputText('', key='nome')],
                 [psg.Text('Advogado Padrão:', size=(20, 1)), psg.InputText('', key='advogado')],
-                [psg.Text(f'Login:                                  {cpf}')],
+                [psg.Text('Login/CPF', size = (20, 1)), psg.InputText('', key='cpf')],
                 [psg.Text('Senha:', size=(20, 1)), psg.InputText('', key='password', password_char='*')],
                 [psg.Button('Enviar Dados'), psg.Button('Voltar')]
             ]
@@ -21,7 +21,7 @@ class InterfaceParte:
             event, values = self.__window.Read()
             self.__window.Close()
             if event == 'Voltar' or event == psg.WIN_CLOSED:
-                break
+                return self.__controlador.controlador_execucao.interface.tela_cadastro()
             else:
                 return values
     

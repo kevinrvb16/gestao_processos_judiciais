@@ -21,7 +21,7 @@ class InterfaceJuiz:
             event, values = self.__window.Read()
             self.__window.Close()
             if event == 'Voltar' or event == psg.WIN_CLOSED:
-                break
+                return self.__controlador.controlador_execucao.interface.tela_cadastro()
             else:
                 return values
             

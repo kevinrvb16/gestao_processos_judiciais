@@ -21,42 +21,43 @@ class ParteController:
 
     def cadastrar_parte(self):
         while True:
-            cpf = ValidadorCPF().solicita_cpf_cadastro()
-            if cpf is None:
-                break
-            existe_cpf = self.verifica_cpf_jah_existente(cpf)
-            if existe_cpf:
-                self.__interface_parte.aviso('\nCPF já foi cadastrado!')
-                continue
-            while True:
-                try:
-                    valores = self.__interface_parte.tela_cadastrar_parte(cpf)
-                    cadastro_ok = self.verifica_cadastro_completo(valores)
-                except TypeError:
-                    break
-                if not cadastro_ok:
-                    self.__interface_parte.aviso('\nCampo(s) obrigatórios não preenchidos')
-                    continue
+            valores = self.__interface_parte.tela_cadastrar_parte()
+            advogado_controlador = self.__controlador_execucao.advogado_controller()
+            cadastro_ok = self.verifica_cadastro_completo(valores)
+
+            if cadastro_ok:
+                parte_controlador = self.__controlador_execucao.parte_controller()
+                validador_cpf = ValidadorCPF()
+                nome = valores['nome']
+                advogado = valores['advogado']
+                cpf = valores['cpf']
                 senha = valores['password']
-                advogado = valores ['advogado']
-                # try:
-                #     senha_utf = senha.encode('utf-8')
-                #     sha1hash = hashlib.sha1()
-                #     sha1hash.update(senha_utf)
-                #     senha_hash = sha1hash.hexdigest()
-                # except Exception:
-                #     self.__tela_login.aviso('Erro ao gerar senha')
-                #     break
-                sucesso_add = self.__parte_dao.add(valores['nome'],
-                                                           cpf,
-                                                           senha,
-                                                           False,
-                                                           advogado)
-                if not sucesso_add:
-                    self.__interface_parte.aviso('Erro no cadastro')
+
+                parte_ja_cadastrada = parte_controlador.verifica_cpf_parte(cpf)
+
+                if not parte_ja_cadastrada:
+                    cpf_valido_parte = validador_cpf.valida_cpf(cpf)
                 else:
-                    self.__interface_parte.aviso(' Parte Cadastrada com Sucesso! ')
-                break
+                    self.__interface_parte.aviso('Parte já cadastrada')
+                    continue
+
+                if cpf_valido_parte:
+                    advogado_encontrado = advogado_controlador.verifica_cod_OAB(advogado)
+                else:
+                    self.__interface_parte.aviso('CPF inválido')
+                    continue
+
+                if advogado_encontrado:
+                    sucesso_add = self.__parte_dao.add(nome, cpf, senha, advogado, False)
+                else:
+                    self.__interface_parte.aviso('Advogado não cadastrado')
+                    continue
+                
+                if sucesso_add:
+                    self.__interface_parte.aviso('Parte cadastrada com sucesso')
+            else:
+                self.__interface_parte.aviso('Campos obrigatórios não preenchidos')
+                continue
             break
         
     def criar_processo(self):
@@ -83,7 +84,7 @@ class ParteController:
             self.__interface_parte.aviso('Erro em edicao de parte. Repita a operação.')
 
     def verifica_cadastro_completo(self, values):
-        if values['nome'] == '' or values['password'] == '':
+        if values['nome'] == '' or values['password'] == '' or values['advogado'] == '':
             self.__interface_parte.close_tela_principal()
             return False
         return True
@@ -98,7 +99,7 @@ class ParteController:
             dic_nome_num_partes[parte.nome] = parte.cpf
         self.__interface_parte.mostrar_lista(dic_nome_num_partes)
 
-    def verifica_cpf_jah_existente(self, cpf):
+    def verifica_cpf_parte(self, cpf):
         verificacao = self.__parte_dao.get(cpf)
         if verificacao is None:
             return False

@@ -17,12 +17,11 @@ class ParteDAO:
     def __load(self):
         self.object_cache = pickle.load(open(self.datasource, 'rb'))
 
-    def add(self, nome, cpf, senha, logado, advogado):
+    def add(self, nome, cpf, senha, advogado, logado):
         if (isinstance(nome, str) and
                 isinstance(cpf, str) and
                 isinstance(senha, str)):
-            novo_admin = Parte(nome, cpf, senha, logado)
-            novo_admin.advogado = advogado
+            novo_admin = Parte(nome, cpf, senha, advogado, logado)
             self.object_cache[novo_admin.cpf] = novo_admin
             self.__dump()
             return True
