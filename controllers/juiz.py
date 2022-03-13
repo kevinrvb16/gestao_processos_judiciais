@@ -18,40 +18,38 @@ class JuizController:
 
     def cadastrar_juiz(self):
         while True:
-            cpf = ValidadorCPF().solicita_cpf_cadastro()
-            if cpf is None:
-                break
-            while True:
-                try:
-                    valores = self.__interface_juiz.tela_cadastrar_juiz(cpf)
-                    cadastro_ok = self.verifica_cadastro_completo(valores)
-                except TypeError:
-                    break
-                if not cadastro_ok:
-                    self.__interface_juiz.aviso('\nCampo(s) obrigatórios não preenchidos')
-                    continue
-                
-                else:
-                    self.__interface_juiz.aviso(' Juiz Cadastrado com Sucesso! ')
+            valores = self.__interface_juiz.tela_cadastrar_juiz()
+            cadastro_ok = self.verifica_cadastro_completo(valores)
+
+            if cadastro_ok:
+                juiz_controlador = self.__controlador_execucao.juiz_controller()
+                validador_cpf = ValidadorCPF()
+                nome = valores['nome']
+                matricula = valores['matricula']
+                cpf = valores['cpf']
                 senha = valores['password']
-                # try:
-                #     senha_utf = senha.encode('utf-8')
-                #     sha1hash = hashlib.sha1()
-                #     sha1hash.update(senha_utf)
-                #     senha_hash = sha1hash.hexdigest()
-                # except Exception:
-                #     self.__tela_login.aviso('Erro ao gerar senha')
-                #     break
-                sucesso_add = self.__juiz_dao.add(valores['nome'],
-                                                           cpf,
-                                                           valores['matricula'],
-                                                           senha)
 
+                juiz_ja_cadastrado = juiz_controlador.verifica_matricula_jah_existente(matricula)
 
-                if not sucesso_add:
-                    self.__interface_juiz.aviso('Erro no cadastro')
-                break
-            break
+                if not juiz_ja_cadastrado:
+                    cpf_valido_juiz = validador_cpf.valida_cpf(cpf)
+                else:
+                    self.__interface_juiz.aviso('Juiz já cadastrado')
+                    continue
+
+                if cpf_valido_juiz:
+                    sucesso_add = self.__juiz_dao.add(nome, cpf, matricula, senha)
+                else:
+                    self.__interface_juiz.aviso('CPF inválido')
+                    continue
+
+                if sucesso_add:
+                    self.__interface_juiz.aviso('Juiz cadastrado com sucesso')
+            else:
+                self.__interface_juiz.aviso('Campos obrigatórios não preenchidos')
+                continue
+            break                
+                
         
     def exibir_opcoes_juiz(self, usuario):
         self.__interface_juiz.tela_inicial_juiz(usuario)

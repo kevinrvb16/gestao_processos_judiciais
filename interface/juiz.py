@@ -7,13 +7,13 @@ class InterfaceJuiz:
         self.__controlador = controlador
         self.__window = None
 
-    def tela_cadastrar_juiz(self, cpf):
+    def tela_cadastrar_juiz(self):
         while True:
             layout_cadastro = [
                 [psg.Text('Preencha os dados abaixo:')],
                 [psg.Text('Nome do Juiz', size=(20, 1)), psg.InputText('', key='nome')],
                 [psg.Text('Matricula do Juiz', size=(20, 1)), psg.InputText('', key='matricula')],
-                [psg.Text(f'Login                                  {cpf}')],
+                [psg.Text('Login/CPF', size = (20, 1)), psg.InputText('', key='cpf')],
                 [psg.Text('Senha', size=(20, 1)), psg.InputText('', key='password', password_char='*')],
                 [psg.Button('Enviar Dados'), psg.Button('Voltar')]
             ]
@@ -48,13 +48,11 @@ class InterfaceJuiz:
             self.__window.Close()
             if event == 'editar':
                 self.tela_editar_juiz(cadastro)
-            elif event == 'vinculados':
+            if event == 'vinculados':
                 self.__controlador.exibir_processos_juiz()
-            elif event == 'processos':
+            if event == 'processos':
                 self.__controlador.exibir_todos_processos_juiz()
-            elif event == 'Deslogar':
-                return self.__controlador.controlador_execucao.interface.tela_inicial()
-            elif event == psg.WIN_CLOSED:
+            if event == 'Deslogar' or event == psg.WIN_CLOSED:
                 break
             else:
                 return values
