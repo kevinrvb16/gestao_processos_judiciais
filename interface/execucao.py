@@ -79,8 +79,8 @@ class InterfaceSistema:
             tela_inicio_sistema = psg.Window(
                 'Iniciar Modulo').Layout(layout_inicia_sistema)
             event, values = tela_inicio_sistema.read()
-            if event == psg.WIN_CLOSED or event == 'Voltar':
-                tela_inicio_sistema.Close()
+            tela_inicio_sistema.Close()
+            if event == psg.WIN_CLOSED or event == 'Voltar':                
                 return self.tela_inicial()
             else:
                 if values[0]:
