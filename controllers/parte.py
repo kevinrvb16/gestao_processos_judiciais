@@ -12,6 +12,10 @@ class ParteController:
         self.__controlador_execucao = controlador_execucao
 
     @property
+    def controlador_execucao(self):
+        return self.__controlador_execucao
+    
+    @property
     def parte_dao(self):
         return self.__parte_dao
 

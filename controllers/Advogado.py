@@ -12,6 +12,10 @@ class AdvogadoController:
         self.__controlador_execucao = controlador_execucao
 
     @property
+    def controlador_execucao(self):
+        return self.__controlador_execucao
+
+    @property
     def advogado_dao(self):
         return self.__Advogado_dao
 
