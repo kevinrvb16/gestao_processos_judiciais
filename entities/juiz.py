@@ -3,8 +3,8 @@ from entities.usuario import Usuario
 
 class Juiz(Usuario):
 
-    def __init__(self, nome: str, login: str, matricula: int, senha: str):
-        super().__init__(nome, login, senha)
+    def __init__(self, nome: str, login: str, matricula: int, senha: str, logado: bool = False):
+        super().__init__(nome, login, senha, logado)
         self.__matricula = matricula
 
     @property

@@ -24,6 +24,27 @@ class InterfaceAdvogado:
                 break
             else:
                 return values
+            
+    def tela_inicial_advogado(self, cadastro):
+        while True:
+            layout_inicial = [
+                [psg.Text('Bem vindo!')],
+                [psg.Button('Editar cadastro')],
+                [psg.Button('Exibir processos vinculados', key='vinculados')],
+                [psg.Button('Exibir todos os processos', key='processos')],
+                [psg.Button('Deslogar')]
+            ]
+            self.__window = psg.Window('Tela inicial').Layout(layout_inicial)
+            event, values = self.__window.Read()
+            self.__window.Close()
+            if event == 'vinculados':
+                self.__controlador.exibir_processos_advogado()
+            if event == 'processos':
+                self.__controlador.exibir_todos_processos_advogado()
+            if event == 'Deslogar' or event == psg.WIN_CLOSED:
+                break
+            else:
+                return values
 
     def get_informacao(self, msg_cabecalho, msg_corpo):
         layout_info = [

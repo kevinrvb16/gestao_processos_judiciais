@@ -11,6 +11,10 @@ class ParteController:
         self.__parte_dao = ParteDAO()
         self.__controlador_execucao = controlador_execucao
 
+    @property
+    def parte_dao(self):
+        return self.__parte_dao
+
     def cadastrar_parte(self):
         while True:
             cpf = ValidadorCPF().solicita_cpf_cadastro()
@@ -30,29 +34,37 @@ class ParteController:
                     self.__interface_parte.aviso('\nCampo(s) obrigatórios não preenchidos')
                     continue
                 senha = valores['password']
-                try:
-                    senha_utf = senha.encode('utf-8')
-                    sha1hash = hashlib.sha1()
-                    sha1hash.update(senha_utf)
-                    senha_hash = sha1hash.hexdigest()
-                except Exception:
-                    self.__tela_login.aviso('Erro ao gerar senha')
-                    break
+                # try:
+                #     senha_utf = senha.encode('utf-8')
+                #     sha1hash = hashlib.sha1()
+                #     sha1hash.update(senha_utf)
+                #     senha_hash = sha1hash.hexdigest()
+                # except Exception:
+                #     self.__tela_login.aviso('Erro ao gerar senha')
+                #     break
                 sucesso_add = self.__parte_dao.add(valores['nome'],
                                                            cpf,
-                                                           senha_hash,
+                                                           senha,
                                                            False)
                 if not sucesso_add:
                     self.__interface_parte.aviso('Erro no cadastro')
                 break
             break
+        
+    def criar_processo(self):
+        self.__controlador_execucao.init_module_cadastrar_processo()
+        
+    def exibir_processos_parte(self):
+        self.__controlador_execucao.init_module_exibir_processos_parte()
 
     def verifica_cadastro_completo(self, values):
         if values['nome'] == '' or values['password'] == '':
             self.__interface_parte.close_tela_principal()
             return False
         return True
-
+    
+    def exibir_opcoes_parte(self, usuario):
+        self.__interface_parte.tela_inicial_parte(usuario)
 
     def listar_parte(self):
         dic_nome_num_partes = {}

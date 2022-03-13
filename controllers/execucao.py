@@ -16,15 +16,19 @@ class ControladorSistema:
     def interface(self):
         return self.__interface_sistema
 
+
     def juiz_controller(self):
         return self.__controlador_juiz
 
+    # @property
     def parte_controller(self):
         return self.__controlador_parte
 
+    # @property
     def advogado_controller(self):
         return self.__controlador_advogado
     
+    # @property
     def processo_controller(self):
         return self.__controlador_processo
     
@@ -43,8 +47,32 @@ class ControladorSistema:
     def init_module_efetuar_ato_processual(self):
         self.__controlador_processo.realizar_ato_processual(1)
         
-    def init_module_despachar(self):
-        self.__controlador_processo.despachar()
+    def init_module_despachar(self, usuario):
+        self.__controlador_processo.despachar(usuario)
+        
+    def init_module_inicial_juiz(self, usuario):
+        self.__controlador_juiz.exibir_opcoes_juiz(usuario)
+        
+    def init_module_inicial_advogado(self, usuario):
+        self.__controlador_advogado.exibir_opcoes_advogado(usuario)
+        
+    def init_module_inicial_parte(self, usuario):
+        self.__controlador_parte.exibir_opcoes_parte(usuario)
+        
+    def init_module_exibir_processos_parte(self):
+        self.__controlador_processo.exibir_processos_vinculados()
+    
+    def init_module_exibir_processos_juiz(self):
+        self.__controlador_processo.exibir_processos_vinculados()
+        
+    def init_module_exibir_processos_advogado(self):
+        self.__controlador_processo.exibir_processos_vinculados()
+        
+    def init_module_exibir_todos_processos_juiz(self):
+        self.__controlador_processo.exibir_todos_processos()
+    
+    def init_module_exibir_todos_processos_advogado(self):
+        self.__controlador_processo.exibir_todos_processos()
 
     def login(self):
         botao, valores = self.__interface_sistema.tela_login()
@@ -58,14 +86,13 @@ class ControladorSistema:
             elif valores['Juiz']:
                 cadastro = self.__controlador_juiz.juiz_dao.get(usuario)
             if cadastro:
-                print(cadastro.senha)
                 if senha == cadastro.senha:
                     if valores['Parte']:
-                        pass
+                        return self.init_module_inicial_parte(cadastro)
                     elif valores['Advogado']:
-                        return self.init_module_efetuar_ato_processual()
+                        return self.init_module_inicial_advogado(cadastro)
                     elif valores['Juiz']:
-                        return self.__controlador_juiz.mostrar_detalhes_juiz(valores[0])
+                        return self.init_module_inicial_juiz(cadastro)
                 else:
                     self.__interface_sistema.aviso('Senha incorreta')
                     return self.login()

@@ -24,7 +24,29 @@ class InterfaceParte:
                 break
             else:
                 return values
-
+    
+            
+    def tela_inicial_parte(self, cadastro):
+        while True:
+            layout_inicial = [
+                [psg.Text('Bem vindo!')],
+                [psg.Button('Editar cadastro')],
+                [psg.Button('Exibir processos vinculados', key='exibirProcessosVinculados')],
+                [psg.Button('Cadastrar processo',key='cadProcesso')],
+                [psg.Button('Deslogar')]
+            ]
+            self.__window = psg.Window('Tela inicial').Layout(layout_inicial)
+            event, values = self.__window.Read()
+            self.__window.Close()
+            if event == 'cadProcesso':
+                self.__controlador.criar_processo()
+            if event == 'exibirProcessosVinculados':
+                self.__controlador.exibir_processos_parte()
+            if event == 'Deslogar' or event == psg.WIN_CLOSED:
+                break
+            else:
+                return values
+            
     def get_informacao(self, msg_cabecalho, msg_corpo):
         layout_info = [
             [psg.Text(msg_corpo, size=(30, 1)), psg.InputText('')],

@@ -12,7 +12,7 @@ class InterfaceProcesso:
         while True:
             layout_cadastro = [
                 [psg.Text('Preencha os campos abaixo:')],
-                [psg.Text('OAB do Advogado Autor:', size=(20, 1)), psg.InputText('', key='codOAB_advogado_autor')],
+                [psg.Text('CPF do Advogado Autor:', size=(20, 1)), psg.InputText('', key='codOAB_advogado_autor')],
                 [psg.Text('CPF do Autor:', size=(20, 1)), psg.InputText('', key='autor')],
                 [psg.Text('Solicitar Sigilo:')],
                 [psg.Radio('Sim:     ',"RADIO", size=(10, 1), key='eh_sigiloso'),
@@ -30,6 +30,32 @@ class InterfaceProcesso:
             else:
                 settings['-filename-'] = values['-IN-']
                 return values
+            
+    def tela_processos_vinculados(self):
+        while True:
+            layout_processos_vinculados = [
+                [psg.Text('Processos vinculados:')], 
+                [psg.Button('Voltar')]
+            ]
+            
+            self.__window = psg.Window('Processos Vinculados').Layout(layout_processos_vinculados)
+            event, values = self.__window.Read()
+            self.__window.Close()
+            if event == 'Voltar' or event == psg.WIN_CLOSED:
+                break
+            
+    def tela_todos_processos(self):
+        while True:
+            layout_processos_vinculados = [
+                [psg.Text('Todos os Processos cadastrados')], 
+                [psg.Button('Voltar')]
+            ]
+            
+            self.__window = psg.Window('Todos Processos Cadastrados').Layout(layout_processos_vinculados)
+            event, values = self.__window.Read()
+            self.__window.Close()
+            if event == 'Voltar' or event == psg.WIN_CLOSED:
+                break
                 
     def aviso(self, msg):
         layout_aviso = [

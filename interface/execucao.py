@@ -16,7 +16,7 @@ class InterfaceSistema:
                     [psg.Radio('Parte', 'r1', key = 'Parte'),
                      psg.Radio('Advogado', 'r1', key = 'Advogado'),
                      psg.Radio('Juiz', 'r1', key = 'Juiz')]])],
-                [psg.Text('Número de usuário', size=(20, 1)), psg.InputText('', key = 'Login')],
+                [psg.Text('CPF de usuário', size=(20, 1)), psg.InputText('', key = 'Login')],
                 [psg.Text('Senha', size=(20, 1)), psg.InputText('', key = 'Senha')],
 
                 [psg.Button('Confirmar'), psg.Button('Sair')]
@@ -25,11 +25,7 @@ class InterfaceSistema:
             botao, valores = self.__window.Read()
             self.__window.Close()
             break
-        return botao, valores
-
-
-
-                
+        return botao, valores    
     
     def tela_inicial(self):
         psg.theme('Reddit')

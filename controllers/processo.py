@@ -68,6 +68,7 @@ class ProcessoController:
                 if arquivo_anexado:
                     id_processo = self.atribui_id()
                     id_juiz = juiz_controller.sortear_juiz()
+                    print(id_juiz)
                     sucesso_add = self.__processo_dao.add(cod_OAB, cpf_autor, cpf_reu, anexo, id_juiz, id_processo, eh_sigiloso)
                     if eh_sigiloso:
                         self.solicita_sigilo(id_processo)
@@ -87,8 +88,7 @@ class ProcessoController:
         id_processo = len(lista_processo) + 1
         return id_processo
         
-        
-        
+                
     def realizar_ato_processual(self, id_processo):
         while True:
             valores = self.__interface_ato_processual.tela_realizar_ato()
@@ -98,17 +98,13 @@ class ProcessoController:
             if arquivo_anexado:
                 data = date.today()
                 self.salvar_data(data, id_processo)
-                if(eh_urgente):
-                   self.solicita_urgencia(eh_urgente, id_processo)
+                self.solicita_urgencia(eh_urgente, id_processo)
                 self.salvar_anexo(nome_anexo, id_processo)
                 self.__interface_processo.aviso('   Processo atualizado com Sucesso ')
             else:
                 self.__interface_processo.aviso('   Anexe um arquivo    ')
                 continue
             break
-    
-    def despachar(self, id_processo):
-        return False
     
     def verifica_anexo(self, nome_anexo):
         if nome_anexo == '':
@@ -132,6 +128,8 @@ class ProcessoController:
     def solicita_urgencia(self, eh_urgente, id_processo):
         
         lista = np.array(id_processo)
+        print('Lista Urgencia:')
+        print(lista)
         
         arquivo = open('listaUrgencia.txt', 'r')
         conteudo = arquivo.read()
@@ -141,8 +139,13 @@ class ProcessoController:
         arquivo.write(conteudo)
         arquivo.close()
         
+        print('\nConteudo no listaUrgencia.txt:\n', conteudo)
+        arquivo.close()
+
     def solicita_sigilo(self, id_processo):
         lista = np.array(id_processo)
+        print('Lista Sigilo:')
+        print(lista)
 
         arquivo = open('listaSigilo.txt', 'r')
         conteudo = arquivo.read()
@@ -162,4 +165,63 @@ class ProcessoController:
         for processo in lista_processos:
             dic_nome_num_Processos[processo.get_eh_urgente] = processo.id_processo
         print(dic_nome_num_Processos)
+       
+    
+    def despachar(self, juiz):
+        while True:
+            valores = self.__interface_ato_processual.despachar_processo()
+            if valores:
+                id_processo = valores['processo_id'].strip()
+                processo = self.__processo_dao.get(int(id_processo))
+                anexo = valores['Browse']
+                if self.eJuizDoProcesso(juiz, processo):
+                    if self.emAndamento(processo):
+                        if self.estaConcluso(processo):
+                            arquivo_anexado = self.verifica_anexo(anexo)
+                            if arquivo_anexado:
+                                if  self.verificaIntimaçao((valores['Autora'],valores['Ré'],valores['Ambas'])):
+                                    data = date.today()
+                                    self.salvar_data(data, int(id_processo))
+                                    self.salvar_anexo(anexo, int(id_processo))
+                                    self.__interface_processo.aviso('   Processo atualizado com Sucesso ')
+                                    return self.__controlador_execucao.interface.tela_inicial()
+                                else:
+                                    self.__interface_processo.aviso('   Selecione as partes a serem intimadas   ')
+                                    continue
+                            else:
+                                self.__interface_processo.aviso('   Anexe um arquivo    ')
+                                continue
+                        else:
+                            self.__interface_processo.aviso('   Esse processo não está pronto para ser despachado    ')
+                            return self.despachar(juiz)
+                    else:
+                        self.__interface_processo.aviso('   Esse processo já está finalizado    ')
+                        return self.despachar(juiz)
+                else:
+                    self.__interface_processo.aviso('   Somente o juiz do processo pode proferir despachos    ')
+                    return self.despachar(juiz)
+            else:
+                return
+            
+    def exibir_processos_vinculados(self):
+        self.__interface_processo.tela_processos_vinculados()
+        
+    def exibir_todos_processos(self):
+        self.__interface_processo.tela_todos_processos()
+    
+    def eJuizDoProcesso(self, juiz, processo):
+        return str(juiz.cpf) == str(processo.juiz)
+    
+    def emAndamento(self, processo):
+        return processo.get_anexos()[-1].split('/')[-1].split('.')[0] != 'Finalizado'
+    
+    def estaConcluso(self, processo):
+        nome_arquivo = processo.get_anexos()[-1].split('/')[-1].split('.')[0]
+        print(nome_arquivo)
+        return  (nome_arquivo != 'Despacho')
+
+    def verificaIntimaçao(self, valores):
+        return valores[0] or valores[1] or valores[2]
+
+
 

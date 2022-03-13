@@ -47,12 +47,22 @@ class JuizController:
                                                            cpf,
                                                            valores['matricula'],
                                                            senha)
-                print(valores['nome'], cpf, valores['matricula'], senha)
+
 
                 if not sucesso_add:
                     self.__interface_juiz.aviso('Erro no cadastro')
                 break
             break
+        
+    def exibir_opcoes_juiz(self, usuario):
+        self.__interface_juiz.tela_inicial_juiz(usuario)
+        
+    def exibir_processos_juiz(self):
+        self.__controlador_execucao.init_module_exibir_processos_juiz()
+    
+    def exibir_todos_processos_juiz(self):
+        self.__controlador_execucao.init_module_exibir_todos_processos_juiz()
+        
         
     def sortear_juiz(self):
         lista_juizes = self.__juiz_dao.get_all()
@@ -85,30 +95,3 @@ class JuizController:
     def get_nome_juiz_by_cpf(self, cpf: str):
         juiz = self.__juiz_dao.get(cpf)
         return juiz.nome
-    
-    def editar_juiz(self, juiz, opcao, novo_dado):
-        if opcao == 0:
-            juiz.nome = novo_dado
-        elif opcao == 1:
-            juiz.matricula = novo_dado
-        elif opcao == 2:
-            juiz.cpf = novo_dado
-        elif opcao == 3:
-            juiz.senha = novo_dado
-        self.__juiz_dao.remove(juiz.matricula)
-        sucesso_edicao = self.__juiz_dao.add(juiz.nome,
-                                                juiz.cpf,
-                                                juiz.matricula,
-                                                juiz.senha)
-        if sucesso_edicao:
-            self.__tela_juiz.aviso('   Edicao sobre juiz efetuada.   ')
-        else:
-            self.__tela_juiz.aviso('Erro em edicao de juiz. Repita a operação.')
-            
-    def remover_juiz(self, juiz):
-        self.__juiz_dao.remove(juiz.matricula)
-        self.__tela_juiz.aviso('juiz removido com sucesso.')
-        
-    def mostrar_detalhes_juiz(self, cpf_juiz):
-        juiz = self.__juiz_dao.get(cpf_juiz)
-        self.__tela_juiz.tela_mostrar_detalhes_juiz(juiz)

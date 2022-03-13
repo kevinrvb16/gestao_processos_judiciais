@@ -11,6 +11,10 @@ class AdvogadoController:
         self.__Advogado_dao = AdvogadoDAO()
         self.__controlador_execucao = controlador_execucao
 
+    @property
+    def advogado_dao(self):
+        return self.__Advogado_dao
+
     def cadastrar_Advogado(self):
         while True:
             cpf = ValidadorCPF().solicita_cpf_cadastro()
@@ -35,23 +39,32 @@ class AdvogadoController:
                     self.__interface_Advogado.aviso('\nAdvogado já foi cadastrado!')
                     continue
                 senha = valores['password']
-                try:
-                    senha_utf = senha.encode('utf-8')
-                    sha1hash = hashlib.sha1()
-                    sha1hash.update(senha_utf)
-                    senha_hash = sha1hash.hexdigest()
-                except Exception:
-                    self.__tela_login.aviso('Erro ao gerar senha')
-                    break
+                # try:
+                #     senha_utf = senha.encode('utf-8')
+                #     sha1hash = hashlib.sha1()
+                #     sha1hash.update(senha_utf)
+                #     senha_hash = sha1hash.hexdigest()
+                # except Exception:
+                #     self.__tela_login.aviso('Erro ao gerar senha')
+                #     break
                 sucesso_add = self.__Advogado_dao.add(valores['nome'],
                                                            cpf,
-                                                           senha_hash,
+                                                           senha,
                                                            False, cod_OAB)
                 if not sucesso_add:
                     self.__interface_Advogado.aviso('Erro no cadastro')
                 break
             break
+        
+    def exibir_opcoes_advogado(self, usuario):
+        self.__interface_Advogado.tela_inicial_advogado(usuario)
+        
+    def exibir_todos_processos_advogado(self):
+        self.__controlador_execucao.init_module_exibir_todos_processos_advogado()
 
+    def exibir_processos_advogado(self):
+        self.__controlador_execucao.init_module_exibir_processos_advogado()
+        
     def verifica_cadastro_completo(self, values):
         if values['nome'] == '' or values['password'] == '':
             self.__interface_Advogado.close_tela_principal()
