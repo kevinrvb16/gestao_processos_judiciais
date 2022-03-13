@@ -21,45 +21,36 @@ class AdvogadoController:
 
     def cadastrar_Advogado(self):
         while True:
-            cpf = ValidadorCPF().solicita_cpf_cadastro()
-            if cpf is None:
-                break
-            existe_cpf = self.verifica_cpf_jah_existente(cpf)
-            if existe_cpf:
-                self.__interface_Advogado.aviso('\nCPF já foi cadastrado!')
-                continue
-            while True:
-                try:
-                    valores = self.__interface_Advogado.tela_cadastrar_Advogado(cpf)
-                    cadastro_ok = self.verifica_cadastro_completo(valores)
-                except TypeError:
-                    break
-                if not cadastro_ok:
-                    self.__interface_Advogado.aviso('\nCampo(s) obrigatórios não preenchidos')
-                    continue
+            valores = self.__interface_Advogado.tela_cadastrar_Advogado()
+            cadastro_ok = self.verifica_cadastro_completo(valores)
+
+            if cadastro_ok:
+                advogado_controlador = self.__controlador_execucao.advogado_controller()
+                validador_cpf = ValidadorCPF()
+                nome = valores['nome']
                 cod_OAB = valores['cod_OAB']
-                existe_cod_OAB = self.verifica_cod_OAB(cod_OAB)            
-                if existe_cod_OAB:
-                    self.__interface_Advogado.aviso('\nAdvogado já foi cadastrado!')
-                    continue
-                else :
-                    self.__interface_Advogado.aviso(' Advogado Cadastrado com Sucesso!')
+                cpf = valores['cpf']
                 senha = valores['password']
-                # try:
-                #     senha_utf = senha.encode('utf-8')
-                #     sha1hash = hashlib.sha1()
-                #     sha1hash.update(senha_utf)
-                #     senha_hash = sha1hash.hexdigest()
-                # except Exception:
-                #     self.__tela_login.aviso('Erro ao gerar senha')
-                #     break
-                sucesso_add = self.__Advogado_dao.add(valores['nome'],
-                                                           cpf,
-                                                           senha,
-                                                           False, cod_OAB)
-                if not sucesso_add:
-                    self.__interface_Advogado.aviso('Erro no cadastro')
-                break
+
+                advogado_ja_cadastrado = advogado_controlador.verifica_cod_OAB(cod_OAB)
+
+                if not advogado_ja_cadastrado:
+                    cpf_valido_advogado = validador_cpf.valida_cpf(cpf)
+                else:
+                    self.__interface_Advogado.aviso('Advogado já cadastrado')
+                    continue
+
+                if cpf_valido_advogado:
+                    sucesso_add = self.__Advogado_dao.add(nome, cpf, senha, False, cod_OAB)
+                else:
+                    self.__interface_Advogado.aviso('CPF inválido')
+                    continue
+
+                if sucesso_add:
+                    self.__interface_Advogado.aviso('Advogado cadastrado com sucesso')
+            else:
+                self.__interface_Advogado.aviso('Campos obrigatórios não preenchidos')
+                continue
             break
         
     def exibir_opcoes_advogado(self, usuario):
@@ -72,7 +63,7 @@ class AdvogadoController:
         self.__controlador_execucao.init_module_exibir_processos_advogado()
         
     def verifica_cadastro_completo(self, values):
-        if values['nome'] == '' or values['password'] == '':
+        if values['nome'] == '' or values['password'] == '' or values['cod_OAB'] == '':
             self.__interface_Advogado.close_tela_principal()
             return False
         return True

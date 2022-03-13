@@ -7,13 +7,13 @@ class InterfaceAdvogado:
         self.__controlador = controlador
         self.__window = None
 
-    def tela_cadastrar_Advogado(self, cpf):
+    def tela_cadastrar_Advogado(self):
         while True:
             layout_cadastro = [
                 [psg.Text('Preencha os dados abaixo:')],
                 [psg.Text('Nome:', size=(20, 1)), psg.InputText('', key='nome')],
-                [psg.Text('Código OAB:', size=(20, 1)), psg.InputText('', key='cod_OAB')],
-                [psg.Text(f'Login:                                  {cpf}')],
+                [psg.Text('Login/Código OAB:', size=(20, 1)), psg.InputText('', key='cod_OAB')],
+                [psg.Text('CPF', size = (20, 1)), psg.InputText('', key='cpf')],
                 [psg.Text('Senha:', size=(20, 1)), psg.InputText('', key='password', password_char='*')],
                 [psg.Button('Enviar Dados'), psg.Button('Voltar')]
             ]

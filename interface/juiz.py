@@ -11,10 +11,10 @@ class InterfaceJuiz:
         while True:
             layout_cadastro = [
                 [psg.Text('Preencha os dados abaixo:')],
-                [psg.Text('Nome do Juiz', size=(20, 1)), psg.InputText('', key='nome')],
-                [psg.Text('Matricula do Juiz', size=(20, 1)), psg.InputText('', key='matricula')],
-                [psg.Text('Login/CPF', size = (20, 1)), psg.InputText('', key='cpf')],
-                [psg.Text('Senha', size=(20, 1)), psg.InputText('', key='password', password_char='*')],
+                [psg.Text('Nome do Juiz:', size=(20, 1)), psg.InputText('', key='nome')],
+                [psg.Text('Login/Matricula:', size=(20, 1)), psg.InputText('', key='matricula')],
+                [psg.Text('CPF', size = (20, 1)), psg.InputText('', key='cpf')],
+                [psg.Text('Senha:', size=(20, 1)), psg.InputText('', key='password', password_char='*')],
                 [psg.Button('Enviar Dados'), psg.Button('Voltar')]
             ]
             self.__window = psg.Window('Cadastrar Juiz').Layout(layout_cadastro)
