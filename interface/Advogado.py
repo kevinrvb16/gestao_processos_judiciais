@@ -27,9 +27,19 @@ class InterfaceAdvogado:
             
     def tela_inicial_advogado(self, cadastro):
         while True:
+            
+            left_col = [
+                [psg.Text(f'Nome: {cadastro.nome}')],
+                [psg.Text(f'OAB: {cadastro.cod_OAB}')]
+            ]
+            right_col = [
+                [psg.Text(f'CPF: {cadastro.cpf}')]
+            ]
             layout_inicial = [
                 [psg.Text('Bem vindo!')],
-                [psg.Button('Editar cadastro')],
+                [psg.Column(left_col, element_justification='c', pad=(18,0)), psg.VSeperator(),
+                    psg.Column(right_col, element_justification='l')],
+                [psg.Button('Editar cadastro', key='editar')],
                 [psg.Button('Exibir processos vinculados', key='vinculados')],
                 [psg.Button('Exibir todos os processos', key='processos')],
                 [psg.Button('Deslogar')]
@@ -37,6 +47,8 @@ class InterfaceAdvogado:
             self.__window = psg.Window('Tela inicial').Layout(layout_inicial)
             event, values = self.__window.Read()
             self.__window.Close()
+            if event == 'editar':
+                self.tela_editar_advogado(cadastro)
             if event == 'vinculados':
                 self.__controlador.exibir_processos_advogado()
             if event == 'processos':

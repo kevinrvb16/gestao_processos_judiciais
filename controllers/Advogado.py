@@ -38,6 +38,8 @@ class AdvogadoController:
                 if existe_cod_OAB:
                     self.__interface_Advogado.aviso('\nAdvogado já foi cadastrado!')
                     continue
+                else :
+                    self.__interface_Advogado.aviso(' Advogado Cadastrado com Sucesso!')
                 senha = valores['password']
                 # try:
                 #     senha_utf = senha.encode('utf-8')

@@ -27,9 +27,18 @@ class InterfaceJuiz:
             
     def tela_inicial_juiz(self, cadastro):
         while True:
+            left_col = [
+                [psg.Text(f'Nome: {cadastro.nome}')],
+                [psg.Text(f'Matricula: {cadastro.matricula}')]
+            ]
+            right_col = [
+                [psg.Text(f'CPF: {cadastro.cpf}')]
+            ]
             layout_inicial = [
                 [psg.Text('Bem vindo!')],
-                [psg.Button('Editar cadastro')],
+                [psg.Column(left_col, element_justification='c', pad=(18, 0)), psg.VSeperator(),
+                    psg.Column(right_col, element_justification='l')],
+                [psg.Button('Editar cadastro', key='editar')],
                 [psg.Button('Exibir processos vinculados', key='vinculados')],
                 [psg.Button('Exibir todos os processos', key='processos')],
                 [psg.Button('Deslogar')]
@@ -37,6 +46,8 @@ class InterfaceJuiz:
             self.__window = psg.Window('Tela inicial').Layout(layout_inicial)
             event, values = self.__window.Read()
             self.__window.Close()
+            if event == 'editar':
+                self.tela_editar_juiz(cadastro)
             if event == 'vinculados':
                 self.__controlador.exibir_processos_juiz()
             if event == 'processos':
@@ -45,6 +56,93 @@ class InterfaceJuiz:
                 break
             else:
                 return values
+            
+            
+    def tela_editar_juiz(self, juiz):
+        while True:
+            layout_altera = [
+                [psg.Text('Escolha alteracao a ser feita no juiz:')],
+                [psg.Radio('Nome     ', "RADIO", default=True, size=(15, 1))],
+                [psg.Radio('Matrícula     ', "RADIO", size=(15, 1))],
+                [psg.Radio('Senha     ', "RADIO", size=(15, 1))],
+                [psg.Button('Enviar'), psg.Button('Voltar')]
+            ]
+            tela_altera = psg.Window(
+                'Alterar Detalhes da juiz').Layout(layout_altera)
+
+            event, values = tela_altera.read()
+            tela_altera.Close()
+            if event == psg.WIN_CLOSED or event == 'Voltar':
+                tela_altera.Close()
+                return -1
+            else:
+                if values[0]:
+                    layout_nome_alt = [
+                        [psg.Text('Novo nome:', pad=(50, 0))],
+                        [psg.InputText('', size=(30, 1), pad=(30, 0))],
+                        [psg.Button('Enviar', pad=(30, 5))],
+                        [psg.Button('Voltar', pad=(0, 5))],
+                    ]
+                    tela_nome_alt = psg.Window(
+                        'Alterar nome').Layout(layout_nome_alt)
+                    event_nome_alt, values_dado_alt = tela_nome_alt.read()
+                    tela_nome_alt.Close()
+
+                    if event_nome_alt == 'Enviar':
+                        if values_dado_alt[0] == '':
+                            self.aviso('O campo de nome deve ser preenchido')
+                            continue
+                        self.__controlador.editar_juiz(
+                            juiz, 0, values_dado_alt[0])
+                        break
+                    else:
+                        continue
+                elif values[1]:
+                    layout_matricula_alt = [
+                        [psg.Text('Nova Matrícula:', pad=(50, 0))],
+                        [psg.InputText('', size=(30, 1), pad=(30, 0))],
+                        [psg.Button('Enviar', pad=(30, 5))],
+                        [psg.Button('Voltar', pad=(0, 5))],
+                    ]
+                    tela_matricula_alt = psg.Window(
+                        'Alterar Matrícula').Layout(layout_matricula_alt)
+                    event_matricula_alt, values_dado_alt = tela_matricula_alt.read()
+                    tela_matricula_alt.Close()
+
+                    if event_matricula_alt == 'Enviar':
+                        if values_dado_alt[0] == '':
+                            self.aviso(
+                                'O campo de matrícula deve ser preenchido')
+                            continue
+                        self.__controlador.editar_juiz(
+                            juiz, 1, values_dado_alt[0])
+                        break
+                    else:
+                        continue
+                elif values[2]:
+                    layout_senha_alt = [
+                        [psg.Text('Novo Senha:', pad=(50, 0))],
+                        [psg.InputText('', size=(30, 1), pad=(30, 0))],
+                        [psg.Button('Enviar', pad=(30, 5))],
+                        [psg.Button('Voltar', pad=(0, 5))],
+                    ]
+                    tela_senha_alt = psg.Window(
+                        'Alterar CPF').Layout(layout_senha_alt)
+                    event_senha_alt, values_dado_alt = tela_senha_alt.read()
+                    tela_senha_alt.Close()
+
+                    if event_senha_alt == 'Enviar':
+                        if values_dado_alt[0] == '':
+                            self.aviso(
+                                'O campo de CPF deve ser preenchido')
+                            continue
+                        self.__controlador.editar_juiz(
+                            juiz, 2, values_dado_alt[0])
+                        break
+                    else:
+                        continue
+                else:
+                    self.aviso('Selecione uma opção válida')
 
     def get_informacao(self, msg_cabecalho, msg_corpo):
         layout_info = [

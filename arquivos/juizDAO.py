@@ -22,7 +22,7 @@ class JuizDAO:
                 isinstance(cpf, str) and
                 isinstance(senha, str)):
             novo_juiz = Juiz(nome, cpf, matricula, senha)
-            self.object_cache[novo_juiz.cpf] = novo_juiz
+            self.object_cache[novo_juiz.matricula] = novo_juiz
             self.__dump()
             return True
         return False

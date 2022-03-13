@@ -34,6 +34,7 @@ class ParteController:
                     self.__interface_parte.aviso('\nCampo(s) obrigatórios não preenchidos')
                     continue
                 senha = valores['password']
+                advogado = valores ['advogado']
                 # try:
                 #     senha_utf = senha.encode('utf-8')
                 #     sha1hash = hashlib.sha1()
@@ -45,9 +46,12 @@ class ParteController:
                 sucesso_add = self.__parte_dao.add(valores['nome'],
                                                            cpf,
                                                            senha,
-                                                           False)
+                                                           False,
+                                                           advogado)
                 if not sucesso_add:
                     self.__interface_parte.aviso('Erro no cadastro')
+                else:
+                    self.__interface_parte.aviso(' Parte Cadastrada com Sucesso! ')
                 break
             break
         
@@ -56,6 +60,23 @@ class ParteController:
         
     def exibir_processos_parte(self):
         self.__controlador_execucao.init_module_exibir_processos_parte()
+        
+    def editar_parte(self, parte, opcao, novo_dado):
+        if opcao == 0:
+            parte.nome = novo_dado
+        elif opcao == 1:
+            parte.senha = novo_dado
+        elif opcao == 2:
+            parte.advogado = novo_dado
+        self.__parte_dao.remove(parte.cpf)
+        sucesso_edicao = self.__parte_dao.add(parte.nome,
+                                                parte.cpf,
+                                                parte.senha,
+                                                True, parte.advogado)
+        if sucesso_edicao:
+            self.__interface_parte.aviso('   Edicao sobre parte efetuada.   ')
+        else:
+            self.__interface_parte.aviso('Erro em edicao de parte. Repita a operação.')
 
     def verifica_cadastro_completo(self, values):
         if values['nome'] == '' or values['password'] == '':

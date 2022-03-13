@@ -23,7 +23,7 @@ class AdvogadoDAO:
                 isinstance(senha, str) and
                 isinstance(cod_OAB, str)):
             novo_Advogado = Advogado(nome, cpf, senha, logado, cod_OAB)
-            self.object_cache[novo_Advogado.cpf] = novo_Advogado
+            self.object_cache[novo_Advogado.cod_OAB] = novo_Advogado
             self.__dump()
             return True
         return False

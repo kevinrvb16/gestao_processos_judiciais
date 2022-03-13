@@ -13,13 +13,13 @@ class InterfaceSistema:
             layout_login = [
                 [psg.Text('Login:')],
                 [psg.Frame('', layout = [
-                    [psg.Radio('Parte', 'r1', key = 'Parte'),
-                     psg.Radio('Advogado', 'r1', key = 'Advogado'),
-                     psg.Radio('Juiz', 'r1', key = 'Juiz')]])],
-                [psg.Text('CPF de usuário', size=(20, 1)), psg.InputText('', key = 'Login')],
+                    [psg.Radio('Parte(CPF)', 'r1', key = 'Parte'),
+                     psg.Radio('Advogado(Código OAB)', 'r1', key = 'Advogado'),
+                     psg.Radio('Juiz(Matrícula)', 'r1', key = 'Juiz')]])],
+                [psg.Text('Login', size=(20, 1)), psg.InputText('', key = 'Login')],
                 [psg.Text('Senha', size=(20, 1)), psg.InputText('', key = 'Senha')],
 
-                [psg.Button('Confirmar'), psg.Button('Sair')]
+                [psg.Button('Confirmar'), psg.Button('Voltar')]
             ]
             self.__window = psg.Window('Login').Layout(layout_login)
             botao, valores = self.__window.Read()
@@ -49,33 +49,6 @@ class InterfaceSistema:
                 [psg.Text('Escolha a opção:')],
                 [psg.Radio('Cadastrar     ', "RADIO", size=(10, 1)),
                 psg.Radio('Efetuar Login    ', "RADIO", size=(10, 1))],
-                [psg.Button('Enviar'), psg.Button('Voltar')]
-            ]
-            tela_inicio_sistema = psg.Window(
-                'Iniciar Modulo').Layout(layout_inicia_sistema)
-            event, values = tela_inicio_sistema.read()
-            tela_inicio_sistema.Close()
-            if event == psg.WIN_CLOSED:                
-                exit(1)
-            elif event == 'Voltar':
-                return self.__controlador.interface.tela_inicial()
-            else:
-                if values[0]:
-                    tela_inicio_sistema.Close()
-                    return self.tela_cadastro()
-                else:
-                    tela_inicio_sistema.Close()
-                    return self.__controlador.login()
-
-                    
-            
-    def tela_cadastro(self):
-         while True:
-            layout_inicia_sistema = [
-                [psg.Text('Cadastrar-se como:')],
-                [psg.Radio('Juiz     ', "RADIO", size=(10, 1)),
-                psg.Radio('Advogado    ', "RADIO", size=(10, 1)),
-                psg.Radio('Parte    ', "RADIO", size=(10, 1))],
                 [psg.Button('Enviar'), psg.Button('Sair')]
             ]
             tela_inicio_sistema = psg.Window(
@@ -84,6 +57,31 @@ class InterfaceSistema:
             if event == psg.WIN_CLOSED or event == 'Sair':
                 tela_inicio_sistema.Close()
                 exit(1)
+            else:
+                if values[0]:
+                    tela_inicio_sistema.Close()
+                    return self.tela_cadastro()
+                elif values[1]:
+                    tela_inicio_sistema.Close()
+                    return self.__controlador.login()
+                else:
+                    self.aviso('Escolha alguma opção para prosseguir!')
+ 
+    def tela_cadastro(self):
+        while True:
+            layout_inicia_sistema = [
+                [psg.Text('Cadastrar-se como:')],
+                [psg.Radio('Juiz     ', "RADIO", size=(10, 1)),
+                psg.Radio('Advogado    ', "RADIO", size=(10, 1)),
+                psg.Radio('Parte    ', "RADIO", size=(10, 1))],
+                [psg.Button('Enviar'), psg.Button('Voltar')]
+            ]
+            tela_inicio_sistema = psg.Window(
+                'Iniciar Modulo').Layout(layout_inicia_sistema)
+            event, values = tela_inicio_sistema.read()
+            if event == psg.WIN_CLOSED or event == 'Voltar':
+                tela_inicio_sistema.Close()
+                return self.tela_inicial()
             else:
                 if values[0]:
                     Execucao(Modulo.JUIZ)
