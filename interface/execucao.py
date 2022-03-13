@@ -49,14 +49,16 @@ class InterfaceSistema:
                 [psg.Text('Escolha a opção:')],
                 [psg.Radio('Cadastrar     ', "RADIO", size=(10, 1)),
                 psg.Radio('Efetuar Login    ', "RADIO", size=(10, 1))],
-                [psg.Button('Enviar'), psg.Button('Sair')]
+                [psg.Button('Enviar'), psg.Button('Voltar')]
             ]
             tela_inicio_sistema = psg.Window(
                 'Iniciar Modulo').Layout(layout_inicia_sistema)
             event, values = tela_inicio_sistema.read()
-            if event == psg.WIN_CLOSED or event == 'Sair':
-                tela_inicio_sistema.Close()
+            tela_inicio_sistema.Close()
+            if event == psg.WIN_CLOSED:                
                 exit(1)
+            elif event == 'Voltar':
+                return self.__controlador.interface.tela_inicial()
             else:
                 if values[0]:
                     tela_inicio_sistema.Close()
