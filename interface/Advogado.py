@@ -49,11 +49,13 @@ class InterfaceAdvogado:
             self.__window.Close()
             if event == 'editar':
                 self.tela_editar_advogado(cadastro)
-            if event == 'vinculados':
+            elif event == 'vinculados':
                 self.__controlador.exibir_processos_advogado()
-            if event == 'processos':
+            elif event == 'processos':
                 self.__controlador.exibir_todos_processos_advogado()
-            if event == 'Deslogar' or event == psg.WIN_CLOSED:
+            elif event == 'Deslogar':
+                return self.__controlador.controlador_execucao.interface.tela_inicial()
+            elif event == psg.WIN_CLOSED:
                 break
             else:
                 return values
