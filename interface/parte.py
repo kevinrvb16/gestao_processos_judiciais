@@ -49,13 +49,11 @@ class InterfaceParte:
             self.__window.Close()
             if event == 'editar':
                 self.tela_editar_parte(cadastro)
-            elif event == 'cadProcesso':
+            if event == 'cadProcesso':
                 self.__controlador.criar_processo()
-            elif event == 'exibirProcessosVinculados':
+            if event == 'exibirProcessosVinculados':
                 self.__controlador.exibir_processos_parte()
-            elif event == 'Deslogar':
-                return self.__controlador.controlador_execucao.interface.tela_inicial()
-            elif event == psg.WIN_CLOSED:
+            if event == 'Deslogar' or event == psg.WIN_CLOSED:
                 break
             else:
                 return values
