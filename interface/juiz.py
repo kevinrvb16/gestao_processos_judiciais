@@ -48,11 +48,13 @@ class InterfaceJuiz:
             self.__window.Close()
             if event == 'editar':
                 self.tela_editar_juiz(cadastro)
-            if event == 'vinculados':
+            elif event == 'vinculados':
                 self.__controlador.exibir_processos_juiz()
-            if event == 'processos':
+            elif event == 'processos':
                 self.__controlador.exibir_todos_processos_juiz()
-            if event == 'Deslogar' or event == psg.WIN_CLOSED:
+            elif event == 'Deslogar':
+                return self.__controlador.controlador_execucao.interface.tela_inicial()
+            elif event == psg.WIN_CLOSED:
                 break
             else:
                 return values
