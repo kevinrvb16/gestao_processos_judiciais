@@ -10,6 +10,7 @@ import random
 import os
 import numpy as np
 import pickle
+import string
 
 class ProcessoController:
 
@@ -95,7 +96,8 @@ class ProcessoController:
         lista_processo = self.__processo_dao.get_all()
         print('lista Processo tamanho:')
         print(len(lista_processo))
-        id_processo = int(cpf_autor + str(len(lista_processo) + 1))
+        cpf_sem_pontuacao = cpf_autor.translate(str.maketrans('', '', string.punctuation))
+        id_processo = int(cpf_sem_pontuacao + str(len(lista_processo) + 1))
         return id_processo
         
                 
