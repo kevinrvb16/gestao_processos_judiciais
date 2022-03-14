@@ -65,7 +65,6 @@ class InterfaceJuiz:
             layout_altera = [
                 [psg.Text('Escolha alteracao a ser feita no juiz:')],
                 [psg.Radio('Nome     ', "RADIO", default=True, size=(15, 1))],
-                [psg.Radio('Matrícula     ', "RADIO", size=(15, 1))],
                 [psg.Radio('Senha     ', "RADIO", size=(15, 1))],
                 [psg.Button('Enviar'), psg.Button('Voltar')]
             ]
@@ -100,28 +99,6 @@ class InterfaceJuiz:
                     else:
                         continue
                 elif values[1]:
-                    layout_matricula_alt = [
-                        [psg.Text('Nova Matrícula:', pad=(50, 0))],
-                        [psg.InputText('', size=(30, 1), pad=(30, 0))],
-                        [psg.Button('Enviar', pad=(30, 5))],
-                        [psg.Button('Voltar', pad=(0, 5))],
-                    ]
-                    tela_matricula_alt = psg.Window(
-                        'Alterar Matrícula').Layout(layout_matricula_alt)
-                    event_matricula_alt, values_dado_alt = tela_matricula_alt.read()
-                    tela_matricula_alt.Close()
-
-                    if event_matricula_alt == 'Enviar':
-                        if values_dado_alt[0] == '':
-                            self.aviso(
-                                'O campo de matrícula deve ser preenchido')
-                            continue
-                        self.__controlador.editar_juiz(
-                            juiz, 1, values_dado_alt[0])
-                        break
-                    else:
-                        continue
-                elif values[2]:
                     layout_senha_alt = [
                         [psg.Text('Novo Senha:', pad=(50, 0))],
                         [psg.InputText('', size=(30, 1), pad=(30, 0))],
@@ -129,17 +106,17 @@ class InterfaceJuiz:
                         [psg.Button('Voltar', pad=(0, 5))],
                     ]
                     tela_senha_alt = psg.Window(
-                        'Alterar CPF').Layout(layout_senha_alt)
+                        'Alterar Senha').Layout(layout_senha_alt)
                     event_senha_alt, values_dado_alt = tela_senha_alt.read()
                     tela_senha_alt.Close()
 
                     if event_senha_alt == 'Enviar':
                         if values_dado_alt[0] == '':
                             self.aviso(
-                                'O campo de CPF deve ser preenchido')
+                                'O campo de Nova Senha deve ser preenchido')
                             continue
                         self.__controlador.editar_juiz(
-                            juiz, 2, values_dado_alt[0])
+                            juiz, 1, values_dado_alt[0])
                         break
                     else:
                         continue
