@@ -68,8 +68,6 @@ class JuizController:
         if opcao == 0:
             juiz.nome = novo_dado
         elif opcao == 1:
-            juiz.matricula = novo_dado
-        elif opcao == 2:
             juiz.senha = novo_dado
         self.__juiz_dao.remove(juiz.matricula)
         sucesso_edicao = self.__juiz_dao.add(juiz.nome,
