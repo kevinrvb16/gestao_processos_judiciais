@@ -73,15 +73,3 @@ class ProcessoDAO:
         processo = self.get(id_processo)
         processo.eh_sigiloso(eh_sigiloso)
         self.__dump()
-
-
-
-
-        
-
-
-
-
-
-
-            

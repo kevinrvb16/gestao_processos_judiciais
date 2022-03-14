@@ -1,8 +1,13 @@
 from interface.atoProcessual import InterfaceAtoProcessual
 from interface.processo import InterfaceProcesso
 from arquivos.processoDAO import ProcessoDAO
+from entities.parte import Parte
+from entities.advogado import Advogado
+from entities.juiz import Juiz
 from controllers.validadorCPF import ValidadorCPF
 from datetime import date
+import random
+import os
 import numpy as np
 import pickle
 
@@ -21,15 +26,15 @@ class ProcessoController:
     def controlador_execucao(self):
         return self.__controlador_execucao
 
-    def cadastrar_processo(self):
+    def cadastrar_processo(self, usuario):
         while True:
-            valores = self.__interface_processo.tela_cadastrar_processo()
+            valores = self.__interface_processo.tela_cadastrar_processo(usuario)
             cadastro_ok = self.verifica_cadastro_completo(valores)
             
             if cadastro_ok:
-                juiz_controller = self.__controlador_execucao.juiz_controller()
-                advogado_controlador = self.__controlador_execucao.advogado_controller()
-                parte_controlador = self.__controlador_execucao.parte_controller()
+                juiz_controller = self.__controlador_execucao.juiz_controller
+                advogado_controlador = self.__controlador_execucao.advogado_controller
+                parte_controlador = self.__controlador_execucao.parte_controller
                 validador_cpf = ValidadorCPF()
                 cod_OAB = valores['codOAB_advogado_autor']
                 cpf_autor = valores['autor']
@@ -42,7 +47,6 @@ class ProcessoController:
                 cpf_encontrado_autor = False
                 cpf_valido_reu = False
                 arquivo_anexado = False
-
                 advogado_encontrado = advogado_controlador.verifica_cod_OAB(cod_OAB)
                 if advogado_encontrado:
                     cpf_valido_autor = validador_cpf.valida_cpf(cpf_autor)
@@ -64,11 +68,12 @@ class ProcessoController:
                 
                 if cpf_valido_reu:
                     arquivo_anexado = self.verifica_anexo(anexo)
+                    anexo = self.cadastrarInicial(anexo)
                 else:
                     self.__interface_processo.aviso('CPF do réu inválido')
                     continue
                 
-                if arquivo_anexado:
+                if arquivo_anexado:                    
                     id_processo = self.atribui_id(cpf_autor)
                     id_juiz = juiz_controller.sortear_juiz()
                     print(id_juiz)
@@ -170,7 +175,7 @@ class ProcessoController:
         for processo in lista_processos:
             dic_nome_num_Processos[processo.get_eh_urgente] = processo.id_processo
         print(dic_nome_num_Processos)
-       
+
     
     def despachar(self, juiz):
         while True:
@@ -211,9 +216,16 @@ class ProcessoController:
     def exibir_processos_vinculados(self, cadastro):
         todos_processos = self.__processo_dao.get_all()
         processos_vinculados = []
-        for key in todos_processos:
-            if cadastro.cpf == key.autor:
-                processos_vinculados.append(key)
+        for processo in todos_processos:
+            if isinstance(cadastro, Advogado):
+                if cadastro.cod_OAB in [processo.codOAB_advogado_autor, processo.codOAB_advogado_reu]:
+                    processos_vinculados.append(processo)
+            elif isinstance(cadastro, Parte):
+                if cadastro.cpf == processo.autor:
+                    processos_vinculados.append(processo)
+            elif isinstance(cadastro, Juiz):
+                if cadastro.matricula == processo.juiz:
+                    processos_vinculados.append(processo)
         self.__interface_processo.tela_processos_vinculados(processos_vinculados)
         
     def exibir_todos_processos(self):
@@ -232,6 +244,42 @@ class ProcessoController:
 
     def verificaIntimaçao(self, valores):
         return valores[0] or valores[1] or valores[2]
+    
+    def andamentoProcesso(self, processo):
+        sequenciaDocumentos = processo.get_anexos()
+        andamentos = []
+        for i in range(len(sequenciaDocumentos)):
+            andamentos.append(sequenciaDocumentos[i].split('/')[-1].split('.')[0])
+        return andamentos
+    
+    def atosPartes(self):
+        return ['Inicial', 'Contestação', 'Réplica', 'Alegações finais', 'Alegações finais',
+        'Apelação', 'Contrarrazões']
+    
+    def cadastrarInicial(self, anexo):
+        cwd = os.getcwd()
+        diretorio = False
+        while not diretorio:
+            final = str(random.randrange(1,10000))
+            try:
+                path = os.path.join(cwd, 'Anexos', final)
+                os.makedirs(path)
+            except:
+                pass
+            if os.path.exists(path):
+                diretorio = True
+        arquivo = open(anexo, 'r')
+        conteudo = arquivo.read()
+        path = path = os.path.join(path, 'Inicial.txt')
+        arquivo = open(path, 'w+')
+        arquivo.write(conteudo)
+        arquivo.close()
+        return path
+    
+    def situacaoProcesso(self, processo):
+        andamentos = processo.get_anexos()
+        situacao = andamentos[-1].split('/')[-1].split('.')[0]
+        return situacao
 
 
 

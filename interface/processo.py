@@ -6,13 +6,13 @@ class InterfaceProcesso:
         self.__controlador = controlador
         self.__window = None
 
-    def tela_cadastrar_processo(self):
+    def tela_cadastrar_processo(self, usuario):
         settings = psg.UserSettings()
         psg.user_settings_filename(path='.')
         while True:
             layout_cadastro = [
                 [psg.Text('Preencha os campos abaixo:')],
-                [psg.Text('CPF do Advogado Autor:', size=(20, 1)), psg.InputText('', key='codOAB_advogado_autor')],
+                [psg.Text('OAB do Advogado Autor:', size=(20, 1)), psg.InputText('', key='codOAB_advogado_autor')],
                 [psg.Text('CPF do Autor:', size=(20, 1)), psg.InputText('', key='autor')],
                 [psg.Text('Solicitar Sigilo:')],
                 [psg.Radio('Sim:     ',"RADIO", size=(10, 1), key='eh_sigiloso'),
@@ -26,8 +26,7 @@ class InterfaceProcesso:
             event, values = self.__window.Read()
             self.__window.Close()
             if event == 'Voltar' or event == psg.WIN_CLOSED:
-                self.__window.Close()
-                return -1
+                return self.__controlador.controlador_execucao.init_module_inicial_parte(usuario)
             else:
                 settings['-filename-'] = values['-IN-']
                 return values
@@ -43,8 +42,7 @@ class InterfaceProcesso:
                 [psg.Text('Processos vinculados:')],
                 layout_processos_vinculados,
                 [psg.Button('Voltar')]
-            ]
-            
+            ]            
             self.__window = psg.Window('Processos Vinculados').Layout(layout)
             event, values = self.__window.Read()
             self.__window.Close()
@@ -52,13 +50,11 @@ class InterfaceProcesso:
                 break
             
     def tela_todos_processos(self):
-        while True:
-            
+        while True:            
             layout_processos_vinculados = [
                 [psg.Text('Todos os Processos cadastrados')], 
                 [psg.Button('Voltar')]
-            ]
-            
+            ]            
             self.__window = psg.Window('Todos Processos Cadastrados').Layout(layout_processos_vinculados)
             event, values = self.__window.Read()
             self.__window.Close()

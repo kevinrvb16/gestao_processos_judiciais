@@ -50,7 +50,7 @@ class InterfaceAdvogado:
             if event == 'editar':
                 self.tela_editar_advogado(cadastro)
             elif event == 'vinculados':
-                self.__controlador.exibir_processos_advogado()
+                self.__controlador.exibir_processos_advogado(cadastro)
             elif event == 'processos':
                 self.__controlador.exibir_todos_processos_advogado()
             elif event == 'Deslogar':

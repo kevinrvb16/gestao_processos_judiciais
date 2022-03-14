@@ -16,18 +16,19 @@ class ControladorSistema:
     def interface(self):
         return self.__interface_sistema
 
+    @property
     def juiz_controller(self):
         return self.__controlador_juiz
 
-    # @property
+    @property
     def parte_controller(self):
         return self.__controlador_parte
 
-    # @property
+    @property
     def advogado_controller(self):
         return self.__controlador_advogado
     
-    # @property
+    @property
     def processo_controller(self):
         return self.__controlador_processo
     
@@ -40,8 +41,8 @@ class ControladorSistema:
     def init_module_advogado(self):
         self.__controlador_advogado.cadastrar_Advogado()
         
-    def init_module_cadastrar_processo(self):
-        self.__controlador_processo.cadastrar_processo()
+    def init_module_cadastrar_processo(self, usuario):
+        self.__controlador_processo.cadastrar_processo(usuario)
         
     def init_module_efetuar_ato_processual(self):
         self.__controlador_processo.realizar_ato_processual(1)

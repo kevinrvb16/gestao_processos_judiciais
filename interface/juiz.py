@@ -49,7 +49,7 @@ class InterfaceJuiz:
             if event == 'editar':
                 self.tela_editar_juiz(cadastro)
             elif event == 'vinculados':
-                self.__controlador.exibir_processos_juiz()
+                self.__controlador.exibir_processos_juiz(cadastro)
             elif event == 'processos':
                 self.__controlador.exibir_todos_processos_juiz()
             elif event == 'Deslogar':

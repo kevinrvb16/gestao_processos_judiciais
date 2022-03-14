@@ -25,7 +25,7 @@ class AdvogadoController:
             cadastro_ok = self.verifica_cadastro_completo(valores)
 
             if cadastro_ok:
-                advogado_controlador = self.__controlador_execucao.advogado_controller()
+                advogado_controlador = self.__controlador_execucao.advogado_controller
                 validador_cpf = ValidadorCPF()
                 nome = valores['nome']
                 cod_OAB = valores['cod_OAB']
@@ -59,8 +59,8 @@ class AdvogadoController:
     def exibir_todos_processos_advogado(self):
         self.__controlador_execucao.init_module_exibir_todos_processos_advogado()
 
-    def exibir_processos_advogado(self):
-        self.__controlador_execucao.init_module_exibir_processos_vinculados()
+    def exibir_processos_advogado(self, usuario):
+        self.__controlador_execucao.init_module_exibir_processos_vinculados(usuario)
         
     def verifica_cadastro_completo(self, values):
         if values['nome'] == '' or values['password'] == '' or values['cod_OAB'] == '':

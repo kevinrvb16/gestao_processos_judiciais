@@ -6,7 +6,7 @@ class InterfaceAtoProcessual:
         self.__controlador = controlador
         self.__window = None
             
-    def tela_realizar_ato(self):
+    def tela_realizar_ato(self, atos):
         settings = psg.UserSettings()
         psg.user_settings_filename(path='.')
         while True:

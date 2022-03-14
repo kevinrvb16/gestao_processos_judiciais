@@ -50,7 +50,7 @@ class InterfaceParte:
             if event == 'editar':
                 self.tela_editar_parte(cadastro)
             elif event == 'cadProcesso':
-                self.__controlador.criar_processo()
+                self.__controlador.criar_processo(cadastro)
             elif event == 'exibirProcessosVinculados':
                 self.__controlador.exibir_processos_parte(cadastro)
             elif event == 'Deslogar':

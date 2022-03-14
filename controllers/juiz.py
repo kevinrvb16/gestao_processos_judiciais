@@ -58,8 +58,8 @@ class JuizController:
     def exibir_opcoes_juiz(self, usuario):
         self.__interface_juiz.tela_inicial_juiz(usuario)
         
-    def exibir_processos_juiz(self):
-        self.__controlador_execucao.init_module_exibir_processos_vinculados()
+    def exibir_processos_juiz(self, usuario):
+        self.__controlador_execucao.init_module_exibir_processos_vinculados(usuario)
     
     def exibir_todos_processos_juiz(self):
         self.__controlador_execucao.init_module_exibir_todos_processos_juiz()

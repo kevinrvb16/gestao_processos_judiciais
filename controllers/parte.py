@@ -22,11 +22,11 @@ class ParteController:
     def cadastrar_parte(self):
         while True:
             valores = self.__interface_parte.tela_cadastrar_parte()
-            advogado_controlador = self.__controlador_execucao.advogado_controller()
+            advogado_controlador = self.__controlador_execucao.advogado_controller
             cadastro_ok = self.verifica_cadastro_completo(valores)
 
             if cadastro_ok:
-                parte_controlador = self.__controlador_execucao.parte_controller()
+                parte_controlador = self.__controlador_execucao.parte_controller
                 validador_cpf = ValidadorCPF()
                 nome = valores['nome']
                 advogado = valores['advogado']
@@ -60,8 +60,8 @@ class ParteController:
                 continue
             break
         
-    def criar_processo(self):
-        self.__controlador_execucao.init_module_cadastrar_processo()
+    def criar_processo(self, usuario):
+        self.__controlador_execucao.init_module_cadastrar_processo(usuario)
         
     def exibir_processos_parte(self, cadastro):
         self.__controlador_execucao.init_module_exibir_processos_vinculados(cadastro)
