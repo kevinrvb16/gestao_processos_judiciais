@@ -53,6 +53,22 @@ class AdvogadoController:
                 continue
             break
         
+    def editar_advogado(self, advogado, opcao, novo_dado):
+        if opcao == 0:
+            advogado.nome = novo_dado
+        elif opcao == 1:
+            advogado.senha = novo_dado
+        self.__Advogado_dao.remove(advogado.cod_OAB)
+        sucesso_edicao = self.__Advogado_dao.add(advogado.nome,
+                                                advogado.cpf,
+                                                advogado.senha,
+                                                True,
+                                                advogado.cod_OAB)
+        if sucesso_edicao:
+            self.__interface_Advogado.aviso('   Edicao sobre advogado efetuada.   ')
+        else:
+            self.__interface_Advogado.aviso('Erro em edicao de advogado. Repita a operação.')
+        
     def exibir_opcoes_advogado(self, usuario):
         self.__interface_Advogado.tela_inicial_advogado(usuario)
         
