@@ -59,7 +59,70 @@ class InterfaceAdvogado:
                 break
             else:
                 return values
+            
+    def tela_editar_advogado(self, advogado):
+        while True:
+            layout_altera = [
+                [psg.Text('Escolha alteracao a ser feita no advogado:')],
+                [psg.Radio('Nome     ', "RADIO", default=True, size=(15, 1))],
+                [psg.Radio('Senha     ', "RADIO", size=(15, 1))],
+                [psg.Button('Enviar'), psg.Button('Voltar')]
+            ]
+            tela_altera = psg.Window(
+                'Alterar Detalhes da advogado').Layout(layout_altera)
 
+            event, values = tela_altera.read()
+            tela_altera.Close()
+            if event == psg.WIN_CLOSED or event == 'Voltar':
+                tela_altera.Close()
+                return -1
+            else:
+                if values[0]:
+                    layout_nome_alt = [
+                        [psg.Text('Novo nome:', pad=(50, 0))],
+                        [psg.InputText('', size=(30, 1), pad=(30, 0))],
+                        [psg.Button('Enviar', pad=(30, 5))],
+                        [psg.Button('Voltar', pad=(0, 5))],
+                    ]
+                    tela_nome_alt = psg.Window(
+                        'Alterar nome').Layout(layout_nome_alt)
+                    event_nome_alt, values_dado_alt = tela_nome_alt.read()
+                    tela_nome_alt.Close()
+
+                    if event_nome_alt == 'Enviar':
+                        if values_dado_alt[0] == '':
+                            self.aviso('O campo de nome deve ser preenchido')
+                            continue
+                        self.__controlador.editar_advogado(
+                            advogado, 0, values_dado_alt[0])
+                        break
+                    else:
+                        continue
+                elif values[1]:
+                    layout_senha_alt = [
+                        [psg.Text('Novo Senha:', pad=(50, 0))],
+                        [psg.InputText('', size=(30, 1), pad=(30, 0))],
+                        [psg.Button('Enviar', pad=(30, 5))],
+                        [psg.Button('Voltar', pad=(0, 5))],
+                    ]
+                    tela_senha_alt = psg.Window(
+                        'Alterar Senha').Layout(layout_senha_alt)
+                    event_senha_alt, values_dado_alt = tela_senha_alt.read()
+                    tela_senha_alt.Close()
+
+                    if event_senha_alt == 'Enviar':
+                        if values_dado_alt[0] == '':
+                            self.aviso(
+                                'O campo de CPF deve ser preenchido')
+                            continue
+                        self.__controlador.editar_advogado(
+                            advogado, 1, values_dado_alt[0])
+                        break
+                    else:
+                        continue
+                else:
+                    self.aviso('Selecione uma opção válida')
+                    
     def get_informacao(self, msg_cabecalho, msg_corpo):
         layout_info = [
             [psg.Text(msg_corpo, size=(30, 1)), psg.InputText('')],
