@@ -17,7 +17,7 @@ class InterfaceSistema:
                      psg.Radio('Advogado(Código OAB)', 'r1', key = 'Advogado'),
                      psg.Radio('Juiz(Matrícula)', 'r1', key = 'Juiz')]])],
                 [psg.Text('Login', size=(20, 1)), psg.InputText('', key = 'Login')],
-                [psg.Text('Senha', size=(20, 1)), psg.InputText('', key = 'Senha')],
+                [psg.Text('Senha', size=(20, 1)), psg.InputText('', key = 'Senha', password_char='*')],
 
                 [psg.Button('Confirmar'), psg.Button('Voltar')]
             ]
