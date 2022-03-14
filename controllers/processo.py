@@ -231,7 +231,8 @@ class ProcessoController:
         self.__interface_processo.tela_processos_vinculados(processos_vinculados)
         
     def exibir_todos_processos(self):
-        self.__interface_processo.tela_todos_processos()
+        todos_processos = self.__processo_dao.get_all()
+        self.__interface_processo.tela_todos_processos(todos_processos)
     
     def eJuizDoProcesso(self, juiz, processo):
         return str(juiz.cpf) == str(processo.juiz)

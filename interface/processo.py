@@ -38,6 +38,7 @@ class InterfaceProcesso:
                 item = [psg.Text(f'ID do Processo: {processo.id_processo}'), psg.Text(f'Matrícula do Juiz: {processo.juiz}'), psg.Button('Vizualizar')]
                 frame = [psg.Frame('', [item])]
                 layout_processos_vinculados.append(frame)
+                
             layout = [
                 [psg.Text('Processos vinculados:')],
                 layout_processos_vinculados,
@@ -49,13 +50,18 @@ class InterfaceProcesso:
             if event == 'Voltar' or event == psg.WIN_CLOSED:
                 break
             
-    def tela_todos_processos(self):
-        while True:            
-            layout_processos_vinculados = [
-                [psg.Text('Todos os Processos cadastrados')], 
+    def tela_todos_processos(self, todos_processos):
+        while True:
+            headings = ['ID Processo', 'Matrícula Juiz', 'OAB Advogado Autor', '             ']
+            header = [[psg.Text('  ')] + [psg.Text(h, size=(17,1)) for h in headings]]
+            rows = [[psg.Text(processo.id_processo, size=(22,1), pad=(0,0)), psg.Text(processo.juiz, size=(22,1), pad=(0,0)), psg.Text(processo.codOAB_advogado_autor, size=(22,1), pad=(0,0)), psg.Button('Visualizar')] for processo in todos_processos]
+            layout_todos_processos = header + rows      
+            layout = [
+                [psg.Text('Todos os Processos cadastrados')],
+                layout_todos_processos,
                 [psg.Button('Voltar')]
             ]            
-            self.__window = psg.Window('Todos Processos Cadastrados').Layout(layout_processos_vinculados)
+            self.__window = psg.Window('Todos Processos Cadastrados').Layout(layout)
             event, values = self.__window.Read()
             self.__window.Close()
             if event == 'Voltar' or event == psg.WIN_CLOSED:

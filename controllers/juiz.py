@@ -26,14 +26,13 @@ class JuizController:
             cadastro_ok = self.verifica_cadastro_completo(valores)
 
             if cadastro_ok:
-                juiz_controlador = self.__controlador_execucao.juiz_controller()
                 validador_cpf = ValidadorCPF()
                 nome = valores['nome']
                 matricula = valores['matricula']
                 cpf = valores['cpf']
                 senha = valores['password']
 
-                juiz_ja_cadastrado = juiz_controlador.verifica_matricula_jah_existente(matricula)
+                juiz_ja_cadastrado = self.verifica_matricula_jah_existente(matricula)
 
                 if not juiz_ja_cadastrado:
                     cpf_valido_juiz = validador_cpf.valida_cpf(cpf)
