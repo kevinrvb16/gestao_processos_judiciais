@@ -32,14 +32,20 @@ class InterfaceProcesso:
                 settings['-filename-'] = values['-IN-']
                 return values
             
-    def tela_processos_vinculados(self):
+    def tela_processos_vinculados(self, processos_vinculados):
         while True:
-            layout_processos_vinculados = [
-                [psg.Text('Processos vinculados:')], 
+            layout_processos_vinculados = []
+            for processo in processos_vinculados:
+                item = [psg.Text(f'ID do Processo: {processo.id_processo}'), psg.Text(f'Matrícula do Juiz: {processo.juiz}'), psg.Button('Vizualizar')]
+                frame = [psg.Frame('', [item])]
+                layout_processos_vinculados.append(frame)
+            layout = [
+                [psg.Text('Processos vinculados:')],
+                layout_processos_vinculados,
                 [psg.Button('Voltar')]
             ]
             
-            self.__window = psg.Window('Processos Vinculados').Layout(layout_processos_vinculados)
+            self.__window = psg.Window('Processos Vinculados').Layout(layout)
             event, values = self.__window.Read()
             self.__window.Close()
             if event == 'Voltar' or event == psg.WIN_CLOSED:
@@ -47,6 +53,7 @@ class InterfaceProcesso:
             
     def tela_todos_processos(self):
         while True:
+            
             layout_processos_vinculados = [
                 [psg.Text('Todos os Processos cadastrados')], 
                 [psg.Button('Voltar')]

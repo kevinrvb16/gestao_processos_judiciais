@@ -60,7 +60,7 @@ class AdvogadoController:
         self.__controlador_execucao.init_module_exibir_todos_processos_advogado()
 
     def exibir_processos_advogado(self):
-        self.__controlador_execucao.init_module_exibir_processos_advogado()
+        self.__controlador_execucao.init_module_exibir_processos_vinculados()
         
     def verifica_cadastro_completo(self, values):
         if values['nome'] == '' or values['password'] == '' or values['cod_OAB'] == '':

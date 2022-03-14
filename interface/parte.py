@@ -52,7 +52,7 @@ class InterfaceParte:
             elif event == 'cadProcesso':
                 self.__controlador.criar_processo()
             elif event == 'exibirProcessosVinculados':
-                self.__controlador.exibir_processos_parte()
+                self.__controlador.exibir_processos_parte(cadastro)
             elif event == 'Deslogar':
                 return self.__controlador.controlador_execucao.interface.tela_inicial()
             elif event == psg.WIN_CLOSED:

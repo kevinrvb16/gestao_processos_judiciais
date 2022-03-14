@@ -58,14 +58,8 @@ class ControladorSistema:
     def init_module_inicial_parte(self, usuario):
         self.__controlador_parte.exibir_opcoes_parte(usuario)
         
-    def init_module_exibir_processos_parte(self):
-        self.__controlador_processo.exibir_processos_vinculados()
-    
-    def init_module_exibir_processos_juiz(self):
-        self.__controlador_processo.exibir_processos_vinculados()
-        
-    def init_module_exibir_processos_advogado(self):
-        self.__controlador_processo.exibir_processos_vinculados()
+    def init_module_exibir_processos_vinculados(self, cadastro):
+        self.__controlador_processo.exibir_processos_vinculados(cadastro)
         
     def init_module_exibir_todos_processos_juiz(self):
         self.__controlador_processo.exibir_todos_processos()
@@ -78,6 +72,7 @@ class ControladorSistema:
         if botao == 'Confirmar':
             usuario = valores['Login'].strip()
             senha = valores['Senha']
+            cadastro = ''
             if valores['Parte']:
                 cadastro = self.__controlador_parte.parte_dao.get(usuario)
             elif valores['Advogado']:

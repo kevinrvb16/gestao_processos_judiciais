@@ -51,7 +51,7 @@ class ProcessoController:
                     continue
                 
                 if cpf_valido_autor:
-                    cpf_encontrado_autor = parte_controlador.verifica_cpf_jah_existente(cpf_autor)
+                    cpf_encontrado_autor = parte_controlador.verifica_cpf_parte(cpf_autor)
                 else:
                     self.__interface_processo.aviso('CPF do autor inválido')
                     continue
@@ -69,7 +69,7 @@ class ProcessoController:
                     continue
                 
                 if arquivo_anexado:
-                    id_processo = self.atribui_id()
+                    id_processo = self.atribui_id(cpf_autor)
                     id_juiz = juiz_controller.sortear_juiz()
                     print(id_juiz)
                     sucesso_add = self.__processo_dao.add(cod_OAB, cpf_autor, cpf_reu, anexo, id_juiz, id_processo, eh_sigiloso)
@@ -86,9 +86,11 @@ class ProcessoController:
                     
             break
     
-    def atribui_id(self):
+    def atribui_id(self, cpf_autor):
         lista_processo = self.__processo_dao.get_all()
-        id_processo = len(lista_processo) + 1
+        print('lista Processo tamanho:')
+        print(len(lista_processo))
+        id_processo = int(cpf_autor + str(len(lista_processo) + 1))
         return id_processo
         
                 
@@ -206,8 +208,13 @@ class ProcessoController:
             else:
                 return
             
-    def exibir_processos_vinculados(self):
-        self.__interface_processo.tela_processos_vinculados()
+    def exibir_processos_vinculados(self, cadastro):
+        todos_processos = self.__processo_dao.get_all()
+        processos_vinculados = []
+        for key in todos_processos:
+            if cadastro.cpf == key.autor:
+                processos_vinculados.append(key)
+        self.__interface_processo.tela_processos_vinculados(processos_vinculados)
         
     def exibir_todos_processos(self):
         self.__interface_processo.tela_todos_processos()

@@ -63,8 +63,8 @@ class ParteController:
     def criar_processo(self):
         self.__controlador_execucao.init_module_cadastrar_processo()
         
-    def exibir_processos_parte(self):
-        self.__controlador_execucao.init_module_exibir_processos_parte()
+    def exibir_processos_parte(self, cadastro):
+        self.__controlador_execucao.init_module_exibir_processos_vinculados(cadastro)
         
     def editar_parte(self, parte, opcao, novo_dado):
         if opcao == 0:
@@ -106,5 +106,5 @@ class ParteController:
         return True
 
     def get_nome_parte_by_cpf(self, cpf: str):
-        juiz = self.__parte_dao.get(cpf)
+        parte = self.__parte_dao.get(cpf)
         return parte.nome
