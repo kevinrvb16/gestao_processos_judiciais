@@ -26,14 +26,13 @@ class ParteController:
             cadastro_ok = self.verifica_cadastro_completo(valores)
 
             if cadastro_ok:
-                parte_controlador = self.__controlador_execucao.parte_controller
                 validador_cpf = ValidadorCPF()
                 nome = valores['nome']
                 advogado = valores['advogado']
                 cpf = valores['cpf']
                 senha = valores['password']
 
-                parte_ja_cadastrada = parte_controlador.verifica_cpf_parte(cpf)
+                parte_ja_cadastrada = self.verifica_cpf_parte(cpf)
 
                 if not parte_ja_cadastrada:
                     cpf_valido_parte = validador_cpf.valida_cpf(cpf)
