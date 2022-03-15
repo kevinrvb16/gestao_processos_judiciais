@@ -66,17 +66,33 @@ class ParteController:
         self.__controlador_execucao.init_module_exibir_processos_vinculados(cadastro)
         
     def editar_parte(self, parte, opcao, novo_dado):
+        sucesso_edicao = False
         if opcao == 0:
             parte.nome = novo_dado
-        elif opcao == 1:
-            parte.senha = novo_dado
-        elif opcao == 2:
-            parte.advogado = novo_dado
-        self.__parte_dao.remove(parte.cpf)
-        sucesso_edicao = self.__parte_dao.add(parte.nome,
+            self.__parte_dao.remove(parte.cpf)
+            sucesso_edicao = self.__parte_dao.add(parte.nome,
                                                 parte.cpf,
                                                 parte.senha,
-                                                True, parte.advogado)
+                                                parte.advogado, True)
+        elif opcao == 1:
+            parte.senha = novo_dado
+            self.__parte_dao.remove(parte.cpf)
+            sucesso_edicao = self.__parte_dao.add(parte.nome,
+                                                parte.cpf,
+                                                parte.senha,
+                                                parte.advogado, True)
+        elif opcao == 2:
+            advogado_controlador = self.__controlador_execucao.advogado_controller
+            advogado_encontrado = advogado_controlador.verifica_cod_OAB(novo_dado)
+            if advogado_encontrado:
+                parte.advogado = novo_dado
+                self.__parte_dao.remove(parte.cpf)
+                sucesso_edicao = self.__parte_dao.add(parte.nome,
+                                                parte.cpf,
+                                                parte.senha,
+                                                parte.advogado, True)
+            else:
+                self.__interface_parte.aviso('Advogado não cadastrado')
         if sucesso_edicao:
             self.__interface_parte.aviso('   Edicao sobre parte efetuada.   ')
         else:

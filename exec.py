@@ -1,4 +1,3 @@
-import PySimpleGUI as psg
 from controllers.execucao import ControladorSistema
 
 

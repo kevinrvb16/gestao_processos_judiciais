@@ -11,6 +11,15 @@ class Processo:
         self.__id_processo = id_processo
         self.__juiz = juiz
         self.__reu = reu
+        self.__intimacao = []
+    
+    @property
+    def intimacao(self):
+        return self.__intimacao
+    
+    @intimacao.setter
+    def intimacao(self, listaIntimacao):
+        self.__intimacao = listaIntimacao
 
     def get_anexos(self):
         return self.__anexos
@@ -84,8 +93,3 @@ class Processo:
     def reu(self, reu):
         self.__reu = reu
 
-
-
-
-
-    

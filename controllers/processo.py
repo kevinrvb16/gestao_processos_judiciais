@@ -6,6 +6,7 @@ from entities.advogado import Advogado
 from entities.juiz import Juiz
 from controllers.validadorCPF import ValidadorCPF
 from datetime import date
+from sys import platform
 import random
 import os
 import numpy as np
@@ -26,12 +27,15 @@ class ProcessoController:
     @property
     def controlador_execucao(self):
         return self.__controlador_execucao
+    
+    @property
+    def processo_dao(self):
+        return self.__processo_dao
 
     def cadastrar_processo(self, usuario):
         while True:
             valores = self.__interface_processo.tela_cadastrar_processo(usuario)
-            cadastro_ok = self.verifica_cadastro_completo(valores)
-            
+            cadastro_ok = self.verifica_cadastro_completo(valores)            
             if cadastro_ok:
                 juiz_controller = self.__controlador_execucao.juiz_controller
                 advogado_controlador = self.__controlador_execucao.advogado_controller
@@ -53,28 +57,24 @@ class ProcessoController:
                     cpf_valido_autor = validador_cpf.valida_cpf(cpf_autor)
                 else:
                     self.__interface_processo.aviso('Advogado não encontrado')
-                    continue
-                
+                    continue                
                 if cpf_valido_autor:
                     cpf_encontrado_autor = parte_controlador.verifica_cpf_parte(cpf_autor)
                 else:
                     self.__interface_processo.aviso('CPF do autor inválido')
-                    continue
-                
+                    continue                
                 if cpf_encontrado_autor:
                     cpf_valido_reu = validador_cpf.valida_cpf(cpf_reu)
                 else:
                     self.__interface_processo.aviso('CPF do autor não cadastrado')
-                    continue
-                
+                    continue                
                 if cpf_valido_reu:
                     arquivo_anexado = self.verifica_anexo(anexo)
-                    anexo = self.cadastrarInicial(anexo)
                 else:
                     self.__interface_processo.aviso('CPF do réu inválido')
-                    continue
-                
-                if arquivo_anexado:                    
+                    continue                
+                if arquivo_anexado:        
+                    anexo = self.salvarDocumento(anexo)            
                     id_processo = self.atribui_id(cpf_autor)
                     id_juiz = juiz_controller.sortear_juiz()
                     print(id_juiz)
@@ -88,8 +88,7 @@ class ProcessoController:
                     continue    
             else:
                 self.__interface_processo.aviso('Campos obrigatórios não preenchidos')
-                continue
-                    
+                continue                    
             break
     
     def atribui_id(self, cpf_autor):
@@ -98,25 +97,39 @@ class ProcessoController:
         print(len(lista_processo))
         cpf_sem_pontuacao = cpf_autor.translate(str.maketrans('', '', string.punctuation))
         id_processo = int(cpf_sem_pontuacao + str(len(lista_processo) + 1))
-        return id_processo
-        
+        return id_processo        
                 
-    def realizar_ato_processual(self, id_processo):
-        while True:
-            valores = self.__interface_ato_processual.tela_realizar_ato()
-            eh_urgente = valores[0]
-            nome_anexo= valores['-IN-']
-            arquivo_anexado = self.verifica_anexo(nome_anexo)
-            if arquivo_anexado:
-                data = date.today()
-                self.salvar_data(data, id_processo)
-                self.solicita_urgencia(eh_urgente, id_processo)
-                self.salvar_anexo(nome_anexo, id_processo)
-                self.__interface_processo.aviso('   Processo atualizado com Sucesso ')
-            else:
-                self.__interface_processo.aviso('   Anexe um arquivo    ')
-                continue
-            break
+    def realizar_ato_processual(self, usuario, id_processo):
+        processo = self.__processo_dao.get(int(id_processo))
+        if ((usuario.cod_OAB == processo.codOAB_advogado_autor) and not ('Autora' in processo.intimacao)) or\
+            ((usuario.cod_OAB == processo.codOAB_advogado_reu) and not ('Ré' in processo.intimacao)):
+                self.__interface_ato_processual.aviso('Não há intimações abertas para este usuário')
+                return self.controlador_execucao.init_module_inicial_advogado(usuario)
+        else:
+            while True:
+                andamentos = self.andamentoProcesso(processo)
+                atos = ['Inicial', 'Contestação', 'Réplica', 'Alegações finais', 'Alegações finais',
+                         'Apelação', 'Contrarrazões']
+                for andamento in andamentos:
+                    if andamento in atos:
+                        atos.remove(andamento)     
+                ato = atos[0]               
+                valores = self.__interface_ato_processual.tela_realizar_ato(ato)
+                eh_urgente = valores[0]
+                nome_anexo= valores['-IN-']
+                arquivo_anexado = self.verifica_anexo(nome_anexo)
+                if arquivo_anexado:
+                    anexo = self.salvarDocumento(nome_anexo, processo, ato)
+                    data = date.today()
+                    self.salvar_data(data, id_processo)
+                    self.solicita_urgencia(eh_urgente, id_processo)
+                    self.salvar_anexo(anexo, id_processo)
+                    self.__interface_processo.aviso('   Processo atualizado com Sucesso ')
+                    processo.intimacao = []
+                else:
+                    self.__interface_processo.aviso('   Anexe um arquivo    ')
+                    continue
+                break
     
     def verifica_anexo(self, nome_anexo):
         if nome_anexo == '':
@@ -137,20 +150,16 @@ class ProcessoController:
     def salvar_anexo(self, data, id_processo):
         self.__processo_dao.add_anexo(data, id_processo)
 
-    def solicita_urgencia(self, eh_urgente, id_processo):
-        
+    def solicita_urgencia(self, eh_urgente, id_processo):        
         lista = np.array(id_processo)
         print('Lista Urgencia:')
-        print(lista)
-        
+        print(lista)        
         arquivo = open('listaUrgencia.txt', 'r')
-        conteudo = arquivo.read()
-        
+        conteudo = arquivo.read()        
         arquivo = open('listaUrgencia.txt', 'w+')
         conteudo += str(lista) + '\n'
         arquivo.write(conteudo)
-        arquivo.close()
-        
+        arquivo.close()        
         print('\nConteudo no listaUrgencia.txt:\n', conteudo)
         arquivo.close()
 
@@ -158,18 +167,14 @@ class ProcessoController:
         lista = np.array(id_processo)
         print('Lista Sigilo:')
         print(lista)
-
         arquivo = open('listaSigilo.txt', 'r')
-        conteudo = arquivo.read()
-        
+        conteudo = arquivo.read()        
         arquivo = open('listaSigilo.txt', 'w+')
         conteudo += str(lista) + ', '
         arquivo.write(conteudo)
         arquivo.close()
-
         print('\nConteudo no listaSigilo.txt:\n', conteudo)
         arquivo.close()
-
 
     def listar_Processos(self):
         dic_nome_num_Processos = {}
@@ -177,7 +182,6 @@ class ProcessoController:
         for processo in lista_processos:
             dic_nome_num_Processos[processo.get_eh_urgente] = processo.id_processo
         print(dic_nome_num_Processos)
-
     
     def despachar(self, juiz):
         while True:
@@ -196,6 +200,15 @@ class ProcessoController:
                                     self.salvar_data(data, int(id_processo))
                                     self.salvar_anexo(anexo, int(id_processo))
                                     self.__interface_processo.aviso('   Processo atualizado com Sucesso ')
+                                    if valores['Autora']:
+                                        processo.intimacao = ['Autora']
+                                    elif valores['Ré']:
+                                        processo.intimacao = ['Ré']
+                                    else:
+                                        processo.intimacao = ['Autora', 'Ré']
+                                    
+                                    # acrescentar intimação dos advogados
+                                    # 
                                     return self.__controlador_execucao.interface.tela_inicial()
                                 else:
                                     self.__interface_processo.aviso('   Selecione as partes a serem intimadas   ')
@@ -214,36 +227,51 @@ class ProcessoController:
                     return self.despachar(juiz)
             else:
                 return
-            
-    def exibir_processos_vinculados(self, cadastro):
+
+    def exibir_processos_vinculados(self, usuario):
         todos_processos = self.__processo_dao.get_all()
         processos_vinculados = []
         for processo in todos_processos:
-            if isinstance(cadastro, Advogado):
-                if cadastro.cod_OAB in [processo.codOAB_advogado_autor, processo.codOAB_advogado_reu]:
+            if isinstance(usuario, Advogado):
+                if usuario.cod_OAB in [processo.codOAB_advogado_autor, processo.codOAB_advogado_reu]:
                     processos_vinculados.append(processo)
-            elif isinstance(cadastro, Parte):
-                if cadastro.cpf == processo.autor:
+            elif isinstance(usuario, Parte):
+                if usuario.cpf == processo.autor:
                     processos_vinculados.append(processo)
-            elif isinstance(cadastro, Juiz):
-                if cadastro.matricula == processo.juiz:
+            elif isinstance(usuario, Juiz):
+                if usuario.matricula == processo.juiz:
                     processos_vinculados.append(processo)
-        self.__interface_processo.tela_processos_vinculados(processos_vinculados)
+        opcao = self.__interface_processo.tela_processos_vinculados(processos_vinculados)
+        if opcao == 'Voltar':
+            self.controlador_execucao.init_module_inicial_advogado(usuario)
+        elif self.__processo_dao.get(int(opcao)):
+            exibicao = self.__processo_dao.get(int(opcao))
+            return self.exibir_informacoes_processo(usuario, exibicao)
         
     def exibir_todos_processos(self):
         todos_processos = self.__processo_dao.get_all()
-        self.__interface_processo.tela_todos_processos(todos_processos)
+        return self.__interface_processo.tela_todos_processos(todos_processos)
+    
+    def exibir_informacoes_processo(self, usuario, processo):
+        opcao = self.__interface_processo.tela_processo(usuario, processo)
+        print(opcao)
     
     def eJuizDoProcesso(self, juiz, processo):
         return str(juiz.cpf) == str(processo.juiz)
+
+    def situacaoProcesso(self, processo):
+        sequenciaDocumentos = processo.get_anexos()
+        if platform == "linux" or platform == "linux2" or platform == "darwin":
+            situacao = sequenciaDocumentos[-1].split('/')[-1].split('.')[0]
+        elif platform == "win32":
+            situacao = sequenciaDocumentos[-1].split('\\')[-1].split('.')[0]
+        return situacao
     
     def emAndamento(self, processo):
-        return processo.get_anexos()[-1].split('/')[-1].split('.')[0] != 'Finalizado'
+        return self.situacaoProcesso(processo) != 'Finalizado'
     
     def estaConcluso(self, processo):
-        nome_arquivo = processo.get_anexos()[-1].split('/')[-1].split('.')[0]
-        print(nome_arquivo)
-        return  (nome_arquivo != 'Despacho')
+        return  len(processo.intimacao) == 0
 
     def verificaIntimaçao(self, valores):
         return valores[0] or valores[1] or valores[2]
@@ -252,37 +280,58 @@ class ProcessoController:
         sequenciaDocumentos = processo.get_anexos()
         andamentos = []
         for i in range(len(sequenciaDocumentos)):
-            andamentos.append(sequenciaDocumentos[i].split('/')[-1].split('.')[0])
+            if platform == "linux" or platform == "linux2" or platform == "darwin":
+                andamentos.append(sequenciaDocumentos[i].split('/')[-1].split('.')[0])
+            elif platform == "win32":
+                andamentos.append(sequenciaDocumentos[i].split('\\')[-1].split('.')[0])
         return andamentos
     
-    def atosPartes(self):
-        return ['Inicial', 'Contestação', 'Réplica', 'Alegações finais', 'Alegações finais',
-        'Apelação', 'Contrarrazões']
+    def getDiretorio(self, processo):
+        listaAnexos = processo.get_anexos()
+        anexo = listaAnexos[-1]
+        if platform == "linux" or platform == "linux2" or platform == "darwin":
+            caminho = anexo.split('/')[:-1]
+            path = '/'.join(caminho)
+        elif platform == "win32":
+            caminho = anexo.split('\\')[:-1]
+            path = '\\'.join(caminho)
+        return path
     
-    def cadastrarInicial(self, anexo):
+    def abrirDocumento(self, anexo, processo = None):
+        if not processo:
+            arquivo = open(anexo, 'r')
+        else:
+            dir = self.getDiretorio(processo)
+            dir = os.path.join(dir, anexo + '.txt')
+            arquivo = arquivo = open(dir, 'r')
+        conteudo = arquivo.read()
+        return conteudo
+    
+    def salvarDocumento(self, anexo, processo = None, ato = None):
         cwd = os.getcwd()
-        diretorio = False
-        while not diretorio:
-            final = str(random.randrange(1,10000))
-            try:
-                path = os.path.join(cwd, 'Anexos', final)
-                os.makedirs(path)
-            except:
-                pass
-            if os.path.exists(path):
-                diretorio = True
+        if not processo:
+            diretorio = False
+            while not diretorio:
+                final = str(random.randrange(1,10000))
+                try:
+                    path = os.path.join(cwd, 'Anexos', final)
+                    os.makedirs(path)
+                except:
+                    pass
+                if os.path.exists(path):
+                    diretorio = True            
+            path = os.path.join(path, 'Inicial.txt')
+        else:
+            path = self.getDiretorio(processo)
+            path = os.path.join(path, f'{ato}.txt')
         arquivo = open(anexo, 'r')
         conteudo = arquivo.read()
-        path = path = os.path.join(path, 'Inicial.txt')
         arquivo = open(path, 'w+')
         arquivo.write(conteudo)
         arquivo.close()
         return path
     
-    def situacaoProcesso(self, processo):
-        andamentos = processo.get_anexos()
-        situacao = andamentos[-1].split('/')[-1].split('.')[0]
-        return situacao
+
 
 
 

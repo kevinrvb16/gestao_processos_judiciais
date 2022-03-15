@@ -45,7 +45,7 @@ class ControladorSistema:
         self.__controlador_processo.cadastrar_processo(usuario)
         
     def init_module_efetuar_ato_processual(self):
-        self.__controlador_processo.realizar_ato_processual(1)
+        self.__controlador_processo.realizar_ato_processual()
         
     def init_module_despachar(self, usuario):
         self.__controlador_processo.despachar(usuario)
@@ -59,8 +59,8 @@ class ControladorSistema:
     def init_module_inicial_parte(self, usuario):
         self.__controlador_parte.exibir_opcoes_parte(usuario)
         
-    def init_module_exibir_processos_vinculados(self, cadastro):
-        self.__controlador_processo.exibir_processos_vinculados(cadastro)
+    def init_module_exibir_processos_vinculados(self, usuario):
+        self.__controlador_processo.exibir_processos_vinculados(usuario)
         
     def init_module_exibir_todos_processos_juiz(self):
         self.__controlador_processo.exibir_todos_processos()

@@ -6,13 +6,14 @@ class InterfaceAtoProcessual:
         self.__controlador = controlador
         self.__window = None
             
-    def tela_realizar_ato(self, atos):
+    def tela_realizar_ato(self, ato):
         settings = psg.UserSettings()
         psg.user_settings_filename(path='.')
         while True:
             layout_ato_processual = [
                 [psg.Text('Preencha os campos abaixo:', size=(30, 1))],
                 [psg.Text('', size=(30, 1))],
+                [psg.Text(f'Ato processual a ser realizado:      {ato}', size=(30, 1))],
                 [psg.Checkbox('Solicitar urgência:     ', size=(30, 1))],
                 [psg.Text('Anexe aqui seu arquivo:', size=(30, 1))],
                 [psg.Input(psg.user_settings_get_entry('-filename-', ''), key='-IN-'), psg.FileBrowse()],

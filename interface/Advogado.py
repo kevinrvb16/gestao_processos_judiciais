@@ -26,8 +26,7 @@ class InterfaceAdvogado:
                 return values
             
     def tela_inicial_advogado(self, cadastro):
-        while True:
-            
+        while True:            
             left_col = [
                 [psg.Text(f'Nome: {cadastro.nome}')],
                 [psg.Text(f'OAB: {cadastro.cod_OAB}')]
@@ -70,7 +69,6 @@ class InterfaceAdvogado:
             ]
             tela_altera = psg.Window(
                 'Alterar Detalhes da advogado').Layout(layout_altera)
-
             event, values = tela_altera.read()
             tela_altera.Close()
             if event == psg.WIN_CLOSED or event == 'Voltar':
@@ -88,7 +86,6 @@ class InterfaceAdvogado:
                         'Alterar nome').Layout(layout_nome_alt)
                     event_nome_alt, values_dado_alt = tela_nome_alt.read()
                     tela_nome_alt.Close()
-
                     if event_nome_alt == 'Enviar':
                         if values_dado_alt[0] == '':
                             self.aviso('O campo de nome deve ser preenchido')
