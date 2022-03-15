@@ -93,8 +93,6 @@ class ProcessoController:
     
     def atribui_id(self, cpf_autor):
         lista_processo = self.__processo_dao.get_all()
-        print('lista Processo tamanho:')
-        print(len(lista_processo))
         cpf_sem_pontuacao = cpf_autor.translate(str.maketrans('', '', string.punctuation))
         id_processo = int(cpf_sem_pontuacao + str(len(lista_processo) + 1))
         return id_processo        
@@ -243,7 +241,12 @@ class ProcessoController:
                     processos_vinculados.append(processo)
         opcao = self.__interface_processo.tela_processos_vinculados(processos_vinculados)
         if opcao == 'Voltar':
-            self.controlador_execucao.init_module_inicial_advogado(usuario)
+            if isinstance(usuario, Advogado):
+                self.controlador_execucao.init_module_inicial_advogado(usuario)
+            elif isinstance(usuario, Parte):
+                self.controlador_execucao.init_module_inicial_parte(usuario)
+            elif isinstance(usuario, Juiz):
+                self.controlador_execucao.init_module_inicial_juiz(usuario)
         elif self.__processo_dao.get(int(opcao)):
             exibicao = self.__processo_dao.get(int(opcao))
             return self.exibir_informacoes_processo(usuario, exibicao)

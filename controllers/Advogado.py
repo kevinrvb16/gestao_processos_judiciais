@@ -1,7 +1,7 @@
 from interface.Advogado import InterfaceAdvogado
 from arquivos.advogadoDAO import AdvogadoDAO
 from controllers.validadorCPF import ValidadorCPF
-import hashlib
+import string
 
 
 class AdvogadoController:
@@ -41,7 +41,8 @@ class AdvogadoController:
                     continue
 
                 if cpf_valido_advogado:
-                    sucesso_add = self.__Advogado_dao.add(nome, cpf, senha, False, cod_OAB)
+                    cpf_sem_pontuacao = cpf.translate(str.maketrans('', '', string.punctuation))
+                    sucesso_add = self.__Advogado_dao.add(nome, cpf_sem_pontuacao, senha, False, cod_OAB)
                 else:
                     self.__interface_Advogado.aviso('CPF inválido')
                     continue

@@ -1,7 +1,7 @@
 from interface.parte import InterfaceParte
 from arquivos.parteDAO import ParteDAO
 from controllers.validadorCPF import ValidadorCPF
-import hashlib
+import string
 
 
 class ParteController:
@@ -47,7 +47,8 @@ class ParteController:
                     continue
 
                 if advogado_encontrado:
-                    sucesso_add = self.__parte_dao.add(nome, cpf, senha, advogado, False)
+                    cpf_sem_pontuacao = cpf.translate(str.maketrans('', '', string.punctuation))
+                    sucesso_add = self.__parte_dao.add(nome, cpf_sem_pontuacao, senha, advogado, False)
                 else:
                     self.__interface_parte.aviso('Advogado não cadastrado')
                     continue

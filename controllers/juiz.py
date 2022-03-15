@@ -1,7 +1,7 @@
 from interface.juiz import InterfaceJuiz
 from arquivos.juizDAO import JuizDAO
 from controllers.validadorCPF import ValidadorCPF
-import hashlib
+import string
 import random
 
 
@@ -41,7 +41,8 @@ class JuizController:
                     continue
 
                 if cpf_valido_juiz:
-                    sucesso_add = self.__juiz_dao.add(nome, cpf, matricula, senha)
+                    cpf_sem_pontuacao = cpf.translate(str.maketrans('', '', string.punctuation))
+                    sucesso_add = self.__juiz_dao.add(nome, cpf_sem_pontuacao, matricula, senha)
                 else:
                     self.__interface_juiz.aviso('CPF inválido')
                     continue
