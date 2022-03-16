@@ -13,13 +13,13 @@ class Processo:
         self.__reu = reu
         self.__intimacao = []
     
-    @property
+
     def intimacao(self):
         return self.__intimacao
     
-    @intimacao.setter
-    def intimacao(self, listaIntimacao):
-        self.__intimacao = listaIntimacao
+    def set_intimacao(self, listaIntimacao):
+        self.__intimacao = []
+        self.__intimacao.extend(listaIntimacao)
 
     def get_anexos(self):
         return self.__anexos

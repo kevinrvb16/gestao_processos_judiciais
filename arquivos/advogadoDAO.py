@@ -31,7 +31,6 @@ class AdvogadoDAO:
     def get(self, key):
         if isinstance(key, str):
             try:
-                print(self.object_cache)
                 return self.object_cache[key]
             except KeyError:
                 return None

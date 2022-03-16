@@ -27,6 +27,7 @@ class ProcessoDAO:
                 isinstance(cpf_reu, str)):
             data = date.today()
             novo_processo = Processo(cod_OAB, cpf_autor, id_processo, cpf_reu, id_juiz)
+            print(cod_OAB)
             novo_processo.set_data(data)
             novo_processo.set_anexos(anexo)
             novo_processo.set_eh_sigiloso(eh_sigiloso)
@@ -73,3 +74,9 @@ class ProcessoDAO:
         processo = self.get(id_processo)
         processo.eh_sigiloso(eh_sigiloso)
         self.__dump()
+    
+    def add_intimacao(self, intimacao, id_processo):
+        processo = self.get(id_processo)
+        processo.set_intimacao(intimacao)
+        self.__dump()
+

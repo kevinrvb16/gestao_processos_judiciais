@@ -1,4 +1,5 @@
 import PySimpleGUI as psg
+import os
 
 class InterfaceProcesso:
 
@@ -13,8 +14,8 @@ class InterfaceProcesso:
         while True:
             layout_cadastro = [
                 [psg.Text('Preencha os campos abaixo:')],
-                [psg.Text('CPF do Autor:', size=(20, 1)), psg.InputText('', key='autor')],
-                [psg.Text('OAB do Advogado Autor:', size=(20, 1)), psg.InputText('', key='codOAB_advogado_autor')],
+                [psg.Text('CPF do Autor:', size=(20, 1)), psg.InputText(default_text=f'{usuario.cpf}', disabled=True, key='autor')],
+                [psg.Text('OAB do Advogado Autor:', size=(20, 1)), psg.InputText(default_text=f'{usuario.advogado}', key='codOAB_advogado_autor')],
                 [psg.Text('Solicitar Sigilo:')],
                 [psg.Radio('Sim:     ',"RADIO", size=(10, 1), key='eh_sigiloso'),
                 psg.Radio('Não:     ',"RADIO", size=(10, 1))],
@@ -70,60 +71,36 @@ class InterfaceProcesso:
             if event == 'Voltar' or event == psg.WIN_CLOSED:
                 break
     
-    def tela_processo(self, usuario, processo):
+    def tela_processo(self, processo, texto = ''):
         settings = psg.UserSettings()
-        psg.user_settings_filename(path='.')        
+        psg.user_settings_filename(path='.')
 
-        parte1 = [[psg.Text(f'Parte autora: {processo.autor}', size=(20, 1))],
-                    [psg.Text(f'Advogado da parte autora: {processo.codOAB_advogado_autor}', size=(20, 1))]] 
-        
-        parte2 = [[psg.Text(f'Parte ré: {processo.reu}', size=(20, 1))],
-                    [psg.Text(f'Advogado da parte ré: {processo.codOAB_advogado_reu}', size=(20, 1))]]
+        parte1 = [[psg.Text(f'Parte autora: {processo.autor}', size=(30, 1))],
+                    [psg.Text(f'Advogado da parte autora: {processo.codOAB_advogado_autor}', size=(30, 1), justification='left')]]
+        parte2 = [[psg.Text(f'Parte ré: {processo.reu}', size=(30, 1), justification='right')],
+                    [psg.Text(f'Advogado da parte ré: {processo.codOAB_advogado_reu}', size=(30, 1), justification='right')]]
+        andamentos = self.__controlador.andamentoProcesso(processo)
 
         layout_cadastro = [
             [psg.Text(f'Processo n. {processo.id_processo}')],
-            [psg.Column(parte1, vertical_alignment='t'), psg.Column(parte2)],
-            [psg.Listbox([self.__controlador.andamentoProcesso(processo)], s=(20,10), key='in-ato'), psg.Button('->'), psg.Output(s=(40,10), key='out-ato')],
-            [psg.Button('ok'), psg.Button('Voltar')]
+            [psg.Text(f'Juiz: {processo.juiz}')],
+            [psg.Column(parte1, vertical_alignment='t'), psg.Column(parte2, vertical_alignment='t')],
+            [psg.Text(f'Intimação aberta para: {processo.intimacao()}'), psg.Button('Peticionar')],
+            [psg.Listbox([[andamento] for andamento in andamentos], s=(20,10), key='in-ato', select_mode= 'LISTBOX_SELECT_MODE_SINGLE'),
+                    psg.Button('->'), psg.Multiline(size=(40,10), key='out-ato', disabled=True, default_text=texto)],
+            [psg.Button('Voltar')]
         ]
-        
-        while True:
-            self.__window = psg.Window('Acompanhamento processual', element_justification='center').Layout(layout_cadastro)
+        self.__window = psg.Window('Acompanhamento processual', element_justification='center').Layout(layout_cadastro).Finalize()     
+        while True:            
             event, values = self.__window.Read()
-            texto = self.__controlador.abrirDocumento(values['in-ato'][0][0], processo)
-            print(texto)           
-            if event == 'Voltar':
-                return self.__controlador.controlador_execucao.init_module_inicial_parte(usuario)
-
-        self.__window.Close()
-
-            # else:
-            #     settings['-filename-'] = values['-IN-']
-            #     return values
-    
-    def teste(self):
-
-        layout = [ [psg.Text('Your typed chars appear here:'), psg.Text('', key='_OUTPUT_')],
-            [psg.Input(do_not_clear=True, key='_IN_')],
-            [psg.Output(size=(80, 20), key='_OUT_')],
-            [psg.Button('Show'), psg.Button('Exit')]
-        ]
-        window = psg.Window('Window Title').Layout(layout).Finalize()
-
-        # Make the Output Element "read only"
-        window.Element('_OUT_')._TKOut.output.bind("<Key>", lambda e: "break")
-
-        while True:             # Event Loop
-            event, values = window.Read()
-            print(event, values)
-            if event is None or event == 'Exit':
+            if values and values.get('in-ato'):
+                texto = self.__controlador.abrirDocumento(values['in-ato'][0][0], processo)
+            if event == '->':
+                self.__window.find_element('out-ato').Update(texto)
+            else:
                 break
-            if event == 'Show':
-                # change the "output" element to be the value of "input" element
-                window.FindElement('_OUTPUT_').Update(values['_IN_'])
-        window.Close()
-                    
-
+        self.__window.Close()
+        return event
 
     def aviso(self, msg):
         layout_aviso = [
