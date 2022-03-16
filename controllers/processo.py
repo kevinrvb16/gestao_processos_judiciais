@@ -82,7 +82,7 @@ class ProcessoController:
                     if sucesso_add:
                         self.__interface_processo.aviso('Processo cadastrado com sucesso')
                 else:
-                    self.__interface_processo.aviso('Anexe um arquivo')
+                    self.__interface_processo.aviso('Anexe um arquivo válido')
                     continue    
             else:
                 self.__interface_processo.aviso('Campos obrigatórios não preenchidos')
@@ -128,11 +128,11 @@ class ProcessoController:
                 break
     
     def verifica_anexo(self, nome_anexo):
-        if nome_anexo == '':
-            return False
-        if nome_anexo.split('.') == None:
-            return False
-        return True
+        nome_anexo_desmembrado= nome_anexo.split('.')
+        
+        if os.path.isfile(nome_anexo) and nome_anexo_desmembrado[len(nome_anexo_desmembrado) - 1] == 'txt':
+            return True
+        return False
         
     def verifica_cadastro_completo(self, values):
         if values['-IN-'] == '' or values['autor'] == '' or values['codOAB_advogado_autor'] == '' or values['eh_sigiloso'] == '' or values['reu'] == '':

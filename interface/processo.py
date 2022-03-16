@@ -37,7 +37,7 @@ class InterfaceProcesso:
         while True:
             layout_processos_vinculados = []
             for processo in processos_vinculados:
-                item = [psg.Text(f'ID do Processo: {processo.id_processo}'), psg.Text(f'Matrícula do Juiz: {processo.juiz}'), psg.Button('Vizualizar', key=f'{processo.id_processo}')]
+                item = [psg.Text(f'ID do Processo: {processo.id_processo}'), psg.Text(f'Matrícula do Juiz: {processo.juiz}'), psg.Button('Visualizar', key=f'{processo.id_processo}')]
                 frame = [psg.Frame('', [item])]
                 layout_processos_vinculados.append(frame)
                 
