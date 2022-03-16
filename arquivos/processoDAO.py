@@ -79,4 +79,8 @@ class ProcessoDAO:
         processo = self.get(id_processo)
         processo.set_intimacao(intimacao)
         self.__dump()
+    
+    def salvar(self):
+        self.__dump()
+
 

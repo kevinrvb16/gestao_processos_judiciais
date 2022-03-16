@@ -73,8 +73,8 @@ class AdvogadoController:
     def exibir_opcoes_advogado(self, usuario):
         self.__interface_Advogado.tela_inicial_advogado(usuario)
         
-    def exibir_todos_processos_advogado(self):
-        self.__controlador_execucao.init_module_exibir_todos_processos_advogado()
+    def exibir_todos_processos_advogado(self, usuario):
+        self.__controlador_execucao.init_module_exibir_todos_processos_advogado(usuario)
 
     def exibir_processos_advogado(self, usuario):
         self.__controlador_execucao.init_module_exibir_processos_vinculados(usuario)
@@ -84,7 +84,6 @@ class AdvogadoController:
             self.__interface_Advogado.close_tela_principal()
             return False
         return True
-
 
     def listar_Advogado(self):
         dic_nome_num_Advogados = {}

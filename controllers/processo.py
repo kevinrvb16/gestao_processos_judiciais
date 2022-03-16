@@ -100,7 +100,7 @@ class ProcessoController:
         if ((usuario.cod_OAB == processo.codOAB_advogado_autor) and not ('Autora' in processo.intimacao())) or\
             ((usuario.cod_OAB == processo.codOAB_advogado_reu) and not ('Ré' in processo.intimacao())):
                 self.__interface_ato_processual.aviso('Não há intimações abertas para este usuário')
-                return self.controlador_execucao.init_module_inicial_advogado(usuario)
+                return self.exibir_informacoes_processo(usuario, processo)
         else:
             while True:
                 andamentos = self.andamentoProcesso(processo)
@@ -122,10 +122,10 @@ class ProcessoController:
                     self.salvar_anexo(anexo, id_processo)
                     self.__interface_processo.aviso('   Processo atualizado com Sucesso ')
                     processo.intimacao = []
+                    return self.exibir_informacoes_processo(usuario, processo)
                 else:
                     self.__interface_processo.aviso('   Anexe um arquivo    ')
                     continue
-                break
     
     def verifica_anexo(self, nome_anexo):
         nome_anexo_desmembrado= nome_anexo.split('.')
@@ -250,18 +250,26 @@ class ProcessoController:
                 return self.controlador_execucao.init_module_inicial_parte(usuario)
             elif isinstance(usuario, Juiz):
                 return self.controlador_execucao.init_module_inicial_juiz(usuario)      
-        elif self.__processo_dao.get(int(opcao)):
-            exibicao = self.__processo_dao.get(int(opcao))
-            return self.exibir_informacoes_processo(usuario, exibicao)
+        elif opcao and self.__processo_dao.get(int(opcao)):
+            proc = self.__processo_dao.get(int(opcao))
+            return self.exibir_informacoes_processo(usuario, proc)
+        else:
+            return self.controlador_execucao.init_module_inicial_advogado(usuario)
         
-    def exibir_todos_processos(self):
+    def exibir_todos_processos(self, usuario):
         todos_processos = self.__processo_dao.get_all()
-        return self.__interface_processo.tela_todos_processos(todos_processos)
+        opcao = self.__interface_processo.tela_todos_processos(todos_processos)
+        if opcao:
+            processo = self.__processo_dao.get(opcao)
+            return self.exibir_informacoes_processo(usuario, processo)
+        else:
+            return
     
     def exibir_informacoes_processo(self, usuario, processo):
         reu = self.controlador_execucao.parte_controller.parte_dao.get(processo.reu)
         adv_reu = self.controlador_execucao.advogado_controller.advogado_dao.get(reu.advogado)
         processo.codOAB_advogado_reu = adv_reu.cod_OAB
+        self.__processo_dao.salvar()
         opcao = self.__interface_processo.tela_processo(processo)
         if opcao == 'Peticionar':
             if isinstance(usuario, Advogado):
@@ -344,8 +352,3 @@ class ProcessoController:
         arquivo.write(conteudo)
         arquivo.close()
         return path
-    
-
-
-
-

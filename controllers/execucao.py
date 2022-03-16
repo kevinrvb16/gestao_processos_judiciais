@@ -62,11 +62,11 @@ class ControladorSistema:
     def init_module_exibir_processos_vinculados(self, usuario):
         self.__controlador_processo.exibir_processos_vinculados(usuario)
         
-    def init_module_exibir_todos_processos_juiz(self):
-        self.__controlador_processo.exibir_todos_processos()
+    def init_module_exibir_todos_processos_juiz(self, usuario):
+        self.__controlador_processo.exibir_todos_processos(usuario)
     
-    def init_module_exibir_todos_processos_advogado(self):
-        self.__controlador_processo.exibir_todos_processos()
+    def init_module_exibir_todos_processos_advogado(self, usuario):
+        self.__controlador_processo.exibir_todos_processos(usuario)
 
     def login(self):
         botao, valores = self.__interface_sistema.tela_login()
@@ -83,6 +83,7 @@ class ControladorSistema:
             if cadastro:
                 if senha == cadastro.senha:
                     if valores['Parte']:
+                        usuario = usuario.translate(str.maketrans('', '', string.punctuation))
                         return self.init_module_inicial_parte(cadastro)
                     elif valores['Advogado']:
                         return self.init_module_inicial_advogado(cadastro)

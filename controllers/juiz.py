@@ -61,8 +61,8 @@ class JuizController:
     def exibir_processos_juiz(self, usuario):
         self.__controlador_execucao.init_module_exibir_processos_vinculados(usuario)
     
-    def exibir_todos_processos_juiz(self):
-        self.__controlador_execucao.init_module_exibir_todos_processos_juiz()
+    def exibir_todos_processos_juiz(self, usuario):
+        self.__controlador_execucao.init_module_exibir_todos_processos_juiz(usuario)
         
     def editar_juiz(self, juiz, opcao, novo_dado):
         if opcao == 0:

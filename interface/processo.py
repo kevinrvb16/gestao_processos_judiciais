@@ -58,7 +58,10 @@ class InterfaceProcesso:
         while True:
             headings = ['ID Processo', 'Matrícula Juiz', 'OAB Advogado Autor', '             ']
             header = [[psg.Text('  ')] + [psg.Text(h, size=(17,1)) for h in headings]]
-            rows = [[psg.Text(processo.id_processo, size=(22,1), pad=(0,0)), psg.Text(processo.juiz, size=(22,1), pad=(0,0)), psg.Text(processo.codOAB_advogado_autor, size=(22,1), pad=(0,0)), psg.Button('Visualizar')] for processo in todos_processos]
+            rows = [[psg.Text(processo.id_processo, size=(22,1), pad=(0,0)), 
+                    psg.Text(processo.juiz, size=(22,1), pad=(0,0)), 
+                    psg.Text(processo.codOAB_advogado_autor, size=(22,1), pad=(0,0)), 
+                    psg.Button('Visualizar', key=processo.id_processo)] for processo in todos_processos]
             layout_todos_processos = header + rows      
             layout = [
                 [psg.Text('Todos os Processos cadastrados')],
@@ -70,6 +73,8 @@ class InterfaceProcesso:
             self.__window.Close()
             if event == 'Voltar' or event == psg.WIN_CLOSED:
                 break
+            else:
+                return event
     
     def tela_processo(self, processo, texto = ''):
         settings = psg.UserSettings()
@@ -94,7 +99,12 @@ class InterfaceProcesso:
         while True:            
             event, values = self.__window.Read()
             if values and values.get('in-ato'):
-                texto = self.__controlador.abrirDocumento(values['in-ato'][0][0], processo)
+                ato = values['in-ato'][0][0]
+                path = self.__controlador.getDiretorio(processo)
+                path = os.path.join(path, f'{ato}.txt')                
+                ld = processo.get_data()
+                data = ld[processo.get_anexos().index(path)]
+                texto = f'Ato realizado em: {data}' + '\n' + self.__controlador.abrirDocumento(values['in-ato'][0][0], processo)
             if event == '->':
                 self.__window.find_element('out-ato').Update(texto)
             else:
