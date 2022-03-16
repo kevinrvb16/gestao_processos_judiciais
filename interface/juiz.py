@@ -51,7 +51,7 @@ class InterfaceJuiz:
             elif event == 'vinculados':
                 self.__controlador.exibir_processos_juiz(cadastro)
             elif event == 'processos':
-                self.__controlador.exibir_todos_processos_juiz()
+                self.__controlador.exibir_todos_processos_juiz(cadastro)
             elif event == 'Deslogar':
                 return self.__controlador.controlador_execucao.interface.tela_inicial()
             elif event == psg.WIN_CLOSED:

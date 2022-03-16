@@ -51,7 +51,7 @@ class InterfaceAdvogado:
             elif event == 'vinculados':
                 self.__controlador.exibir_processos_advogado(cadastro)
             elif event == 'processos':
-                self.__controlador.exibir_todos_processos_advogado()
+                self.__controlador.exibir_todos_processos_advogado(cadastro)
             elif event == 'Deslogar':
                 return self.__controlador.controlador_execucao.interface.tela_inicial()
             elif event == psg.WIN_CLOSED:
