@@ -3,6 +3,7 @@ from controllers.parte import ParteController
 from controllers.Advogado import AdvogadoController
 from controllers.processo import ProcessoController
 from interface.execucao import InterfaceSistema
+import string
 
 class ControladorSistema:
     def __init__(self):
@@ -75,6 +76,7 @@ class ControladorSistema:
             senha = valores['Senha']
             cadastro = ''
             if valores['Parte']:
+                usuario = usuario.translate(str.maketrans('', '', string.punctuation))
                 cadastro = self.__controlador_parte.parte_dao.get(usuario)
             elif valores['Advogado']:
                 cadastro = self.__controlador_advogado.advogado_dao.get(usuario)
